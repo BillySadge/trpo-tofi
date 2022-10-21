@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Row, Col } from "react-bootstrap";
 import Book from "../components/Book";
+import Loader from '../components/Loader'
+import Message from '../components/Message'
 import { listBooks } from "../actions/bookActions";
 function HomeScreen() {
   const dispatch = useDispatch();
@@ -17,9 +19,9 @@ function HomeScreen() {
     <div>
       <h1>Latest Books</h1>
       {loading ? (
-        <h2>Loading....</h2>
+        <Loader />
       ) : error ? (
-        <h3>{error}</h3>
+        <Message variant='danger'>{error}</Message>
       ) : (
         <Row>
           {books.map((book) => (
