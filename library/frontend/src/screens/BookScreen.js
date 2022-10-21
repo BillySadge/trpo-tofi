@@ -1,12 +1,24 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Row, Col, Image, ListGroup, Button, Card } from 'react-bootstrap'
 import Rating from '../components/Rating'
-import books from '../books'
+import axios from 'axios'
 
 function BookScreen({...match }) {
     const {id} = useParams()
-    const book = books.find((book) => book._id === id)
+    const [book, setBook] = useState([])
+
+    useEffect(() => {
+
+        async function fetchBook (){
+            
+            const { data } = await axios.get(`/api/books/${id}`)
+            setBook(data)
+        }
+
+        fetchBook()
+        
+    }, [id])
     return (
         <div>
             <Link to='/' className='btn btn-light my-3'>Go Back</Link>
