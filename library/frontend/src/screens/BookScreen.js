@@ -44,7 +44,7 @@ function BookScreen({...match }) {
                         </ListGroup.Item>
 
                         <ListGroup.Item>
-                            Description: ${book.description}
+                            Description: {book.description}
                         </ListGroup.Item>
 
                     </ListGroup>
