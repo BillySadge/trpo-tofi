@@ -1,18 +1,24 @@
-import { legacy_createStore as createStore, combineReducers, applyMiddleware } from 'redux'
-import thunk from 'redux-thunk'
-import { composeWithDevTools } from 'redux-devtools-extension'
-import { bookListReducer } from './reducers/bookReducers'
+import {
+  legacy_createStore as createStore,
+  combineReducers,
+  applyMiddleware,
+} from "redux";
+import thunk from "redux-thunk";
+import { composeWithDevTools } from "redux-devtools-extension";
+import { bookListReducer } from "./reducers/bookReducers";
 
 const reducer = combineReducers({
-    bookList: bookListReducer,
-})
+  bookList: bookListReducer,
+});
 
-const initialState = {}
+const initialState = {};
 
-const middleware = [thunk]
+const middleware = [thunk];
 
-const store = createStore(reducer, initialState, 
-    composeWithDevTools(applyMiddleware(...middleware)))
+const store = createStore(
+  reducer,
+  initialState,
+  composeWithDevTools(applyMiddleware(...middleware))
+);
 
-
-export default store
+export default store;
