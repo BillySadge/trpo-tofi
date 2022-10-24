@@ -6,7 +6,29 @@ from rest_framework.response import Response
 from .books import books
 from .models import Book
 from .serializer import BookSerializer
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializer import BookSerializer, UserSerializer, UserSerializerWithToken
+
 # Create your views here.
+
+
+
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        serializers = UserSerializerWithToken(self.user).data
+
+        for k,v in serializers.items():
+            data[k] = v
+        return data
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
+
 
 @api_view(['GET'])
 def getRoutes(request):
@@ -22,6 +44,15 @@ def getRoutes(request):
         
     ]
     return Response(routes)
+
+
+
+@api_view(['GET'])
+def getUserProfile(request):
+    user = request.user
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
+
 
 
 @api_view(['GET'])
