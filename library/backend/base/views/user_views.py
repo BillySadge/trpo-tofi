@@ -3,8 +3,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from django.contrib.auth.models import User
-from .models import Book
-from .serializer import BookSerializer, UserSerializer, UserSerializerWithToken
+from base.serializer import BookSerializer, UserSerializer, UserSerializerWithToken
 
 # Create your views here.
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -12,6 +11,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
+
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -47,22 +47,6 @@ def registerUser(request):
         message = {'detail': 'User with this email already exists'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
-# @api_view(['GET'])
-# def getRoutes(request):
-#     routes = [
-#         '/api/books/',
-#         '/api/books/create/',
-#         '/api/books/upload/',
-#         '/api/books/<id>/reviews/',
-#         '/api/books/top/',
-#         '/api/books/<id>/',
-#         '/api/books/delete/<id>/',
-#         '/api/books/update/<id>/',
-        
-#     ]
-#     return Response(routes)
-
-
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
@@ -79,20 +63,3 @@ def getUsers(request):
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
  
-
-
-@api_view(['GET'])
-def getBooks(request):
-    books = Book.objects.all()
-    serializer = BookSerializer(books, many=True)
-    return Response(serializer.data)
-
-
-
-@api_view(['GET'])
-def getBook(request, pk):
-    book = Book.objects.get(_id=pk)
-    serializer = BookSerializer(book, many=False)
-    return Response(serializer.data)
-
-
