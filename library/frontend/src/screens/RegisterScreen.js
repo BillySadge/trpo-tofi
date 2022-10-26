@@ -5,52 +5,74 @@ import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import FormContainer from "../components/FormContainer";
-import { login } from "../actions/userActions";
+import { register } from "../actions/userActions";
 import { useLocation, useNavigate } from "react-router-dom";
-function LoginScreen() {
+
+function RegisterScreen() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
 
   const dispatch = useDispatch();
 
   const location = useLocation();
   const redirect = location.search ? location.search.split("=")[1] : "/";
-    
+
   const navigate = useNavigate();
-  const userLogin = useSelector(state => state.userLogin);
-  const { error, loading, userInfo } = userLogin;
+  const userRegister = useSelector((state) => state.userRegister);
+  const { error, loading, userInfo } = userRegister;
 
-    useEffect(()=>{
-    if(userInfo){
-        navigate(redirect)
-     
+  useEffect(() => {
+    if (userInfo) {
+      navigate(redirect);
     }
-  }, [userInfo, redirect, navigate])
-
+  }, [userInfo, redirect, navigate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(login(email, password)) 
+
+    if (password !== confirmPassword) {
+      setMessage("Passwords do not match");
+    } else {
+      dispatch(register(name, email, password));
+    }
   };
   return (
     <FormContainer>
       <h1>Sign In</h1>
-      {error && <Message variant='danger'>{error}</Message>}
+      {message && <Message variant='danger'>{message}</Message>}
+      {error && <Message variant="danger">{error}</Message>}
       {loading && <Loader />}
       <Form onSubmit={submitHandler}>
+
+        <Form.Group controlId="name">
+          <Form.Label>Name</Form.Label>
+          <Form.Control
+            required
+            type="name"
+            placeholder="Enter name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+
         <Form.Group controlId="email">
           <Form.Label>Email Address</Form.Label>
           <Form.Control
+            required
             type="email"
             placeholder="Enter Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           ></Form.Control>
         </Form.Group>
+
         <Form.Group controlId="password">
           <Form.Label>Password</Form.Label>
           <Form.Control
+            required
             type="password"
             placeholder="Enter Password"
             value={password}
@@ -58,16 +80,27 @@ function LoginScreen() {
           ></Form.Control>
         </Form.Group>
 
+        <Form.Group controlId="passwordConfirm">
+          <Form.Label>Confirm Password</Form.Label>
+          <Form.Control
+            required
+            type="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+          ></Form.Control>
+        </Form.Group>
+
         <Button className="my-3 " type="submit" variant="primary">
-          Sign In
+          Register
         </Button>
       </Form>
 
       <Row className="py-3">
         <Col>
-          New here?{" "}
-          <Link to={redirect ? `/register?redirect=${redirect}` : "/register"}>
-            Register
+          Have an account?{" "}
+          <Link to={redirect ? `/login?redirect=${redirect}` : "/login"}>
+            Sign In
           </Link>
         </Col>
       </Row>
@@ -75,4 +108,4 @@ function LoginScreen() {
   );
 }
 
-export default LoginScreen;
+export default RegisterScreen;
