@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 import HomeScreen from "./screens/HomeScreen";
 import BookScreen from "./screens/BookScreen";
 import CartScreen from "./screens/CartScreen";
+import LoginScreen from "./screens/LoginScreen";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Container>
           <Routes>
             <Route exact path="/" element={<HomeScreen />} />
+            <Route exact path="/login" element={<LoginScreen />} />
             <Route path="/book/:id" element={<BookScreen />} />
             {/* TODO FIND THE SOLUTION TO REPLACE WILD CARD WITHOUT DOUBLE RENDERING */}
             {/* <Route path="/cart/*" element={<CartScreen />} /> */}
