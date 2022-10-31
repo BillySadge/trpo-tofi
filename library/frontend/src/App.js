@@ -8,6 +8,7 @@ import BookScreen from "./screens/BookScreen";
 import CartScreen from "./screens/CartScreen";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
+import ProfileScreen from "./screens/ProfileScreen";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
             <Route exact path="/" element={<HomeScreen />} />
             <Route exact path="/login" element={<LoginScreen />} />
             <Route exact path="/register" element={<RegisterScreen />} />
+            <Route exact path="/profile" element={<ProfileScreen />} />
             <Route path="/book/:id" element={<BookScreen />} />
             {/* TODO FIND THE SOLUTION TO REPLACE WILD CARD WITHOUT DOUBLE RENDERING */}
             {/* <Route path="/cart/*" element={<CartScreen />} /> */}
