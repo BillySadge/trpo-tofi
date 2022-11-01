@@ -1,0 +1,42 @@
+BEGIN;
+--
+-- Create model Book
+--
+CREATE TABLE "base_book" ("name" varchar(200) NULL, "brand" varchar(200) NULL, "category" varchar(200) NULL, "description" text NULL, "rating" decimal NULL, "numReviews" integer NULL, "price" decimal NULL, "countInStock" integer NULL, "createdAt" datetime NOT NULL, "_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "user_id" integer NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
+CREATE INDEX "base_book_user_id_a805f0e1" ON "base_book" ("user_id");
+COMMIT;
+BEGIN;
+--
+-- Create model Order
+--
+CREATE TABLE "base_order" ("paymentMethod" varchar(200) NULL, "taxPrice" decimal NULL, "shippingPrice" decimal NULL, "totalPrice" decimal NULL, "isPaid" bool NOT NULL, "paidAt" datetime NULL, "isDelivered" bool NOT NULL, "deliveredAt" datetime NULL, "createdAt" datetime NOT NULL, "_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "user_id" integer NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
+--
+-- Create model ShippingAddress
+--
+CREATE TABLE "base_shippingaddress" ("address" varchar(200) NULL, "city" varchar(200) NULL, "postalCode" varchar(200) NULL, "country" varchar(200) NULL, "shippingPrice" decimal NULL, "_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "order_id" integer NULL UNIQUE REFERENCES "base_order" ("_id") DEFERRABLE INITIALLY DEFERRED);
+--
+-- Create model Review
+--
+CREATE TABLE "base_review" ("name" varchar(200) NULL, "rating" integer NULL, "comment" text NULL, "_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "book_id" integer NULL REFERENCES "base_book" ("_id") DEFERRABLE INITIALLY DEFERRED, "user_id" integer NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
+--
+-- Create model OrderItem
+--
+CREATE TABLE "base_orderitem" ("name" varchar(200) NULL, "qty" integer NULL, "price" decimal NULL, "image" varchar(200) NULL, "_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "book_id" integer NULL REFERENCES "base_book" ("_id") DEFERRABLE INITIALLY DEFERRED, "order_id" integer NULL REFERENCES "base_order" ("_id") DEFERRABLE INITIALLY DEFERRED);
+CREATE INDEX "base_order_user_id_8ad0adec" ON "base_order" ("user_id");
+CREATE INDEX "base_review_book_id_ce15ac13" ON "base_review" ("book_id");
+CREATE INDEX "base_review_user_id_9a731b84" ON "base_review" ("user_id");
+CREATE INDEX "base_orderitem_book_id_e3ce6a46" ON "base_orderitem" ("book_id");
+CREATE INDEX "base_orderitem_order_id_aaa7f08a" ON "base_orderitem" ("order_id");
+COMMIT;
+
+
+BEGIN;
+--
+-- Add field image to book
+--
+CREATE TABLE "new__base_book" ("image" varchar(100) NULL, "name" varchar(200) NULL, "brand" varchar(200) NULL, "category" varchar(200) NULL, "description" text NULL, "rating" decimal NULL, "numReviews" integer NULL, "price" decimal NULL, "countInStock" integer NULL, "createdAt" datetime NOT NULL, "_id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "user_id" integer NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO "new__base_book" ("name", "brand", "category", "description", "rating", "numReviews", "price", "countInStock", "createdAt", "_id", "user_id", "image") SELECT "name", "brand", "category", "description", "rating", "numReviews", "price", "countInStock", "createdAt", "_id", "user_id", NULL FROM "base_book";
+DROP TABLE "base_book";
+ALTER TABLE "new__base_book" RENAME TO "base_book";
+CREATE INDEX "base_book_user_id_a805f0e1" ON "base_book" ("user_id");
+COMMIT;
