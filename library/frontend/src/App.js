@@ -9,6 +9,7 @@ import CartScreen from "./screens/CartScreen";
 import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import ProfileScreen from "./screens/ProfileScreen";
+import ShippingScreen from "./screens/ShippingScreen";
 
 function App() {
   return (
@@ -18,9 +19,10 @@ function App() {
         <Container>
           <Routes>
             <Route exact path="/" element={<HomeScreen />} />
-            <Route exact path="/login" element={<LoginScreen />} />
-            <Route exact path="/register" element={<RegisterScreen />} />
-            <Route exact path="/profile" element={<ProfileScreen />} />
+            <Route path="/login" element={<LoginScreen />} />
+            <Route path="/register" element={<RegisterScreen />} />
+            <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="/shipping" element={<ShippingScreen />} />
             <Route path="/book/:id" element={<BookScreen />} />
             {/* TODO FIND THE SOLUTION TO REPLACE WILD CARD WITHOUT DOUBLE RENDERING */}
             {/* <Route path="/cart/*" element={<CartScreen />} /> */}

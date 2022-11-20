@@ -23,6 +23,12 @@ function CartScreen() {
   const { cartItems } = cart;
   const dispatch = useDispatch();
 
+
+  // const userDetails = useSelector(state => state.userDetails);
+  // const { user } = userDetails;
+  const userLogin = useSelector(state => state.userLogin);
+  const { error, loading, userInfo } = userLogin;
+
   useEffect(() => {
     if (bookId.id) {
       dispatch(addToCart(bookId.id, qty));
@@ -35,7 +41,13 @@ function CartScreen() {
   }
 
   const checkoutHandler = () => {
-    navigate('/login?redirect=shipping')
+    if (userInfo === null  || typeof userInfo === 'undefined'){
+      navigate('/login?redirect=shipping')
+    }else if(userInfo !== null)  {
+      navigate('/shipping')
+    }
+    
+    // navigate('/login?redirect=shipping')
   }
   return (
     <Row>
