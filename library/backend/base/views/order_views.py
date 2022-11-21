@@ -9,7 +9,7 @@ from rest_framework import status
 
 
 @api_view(['POST'])
-@permission_classes(['IsAuthenticated'])
+@permission_classes([IsAuthenticated])
 def addOrderItems(request):
     user = request.user
     data = request.data
@@ -53,5 +53,50 @@ def addOrderItems(request):
             book.save()
 
             
-    serializer = OrderSerializer(order, many=True)
-    return Response(serializer.data)
+        serializer = OrderSerializer(order, many=False)
+        return Response(serializer.data)
+
+
+
+# @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
+# def addOrderItems(request):
+#     user = request.user
+#     data = request.data
+
+#     orderItems = data['orderItems']
+
+#     if orderItems and len(orderItems) == 0:
+#         return Response({'detail': 'No Order Items'}, status=status.HTTP_400_BAD_REQUEST)
+#     else:
+#         order = Order.objects.create(
+#             user=user,
+#             paymentMethod=data['paymentMethod'],
+#             taxPrice=data['taxPrice'],
+#             shippingPrice=data['shippingPrice'],
+#             totalPrice=data['totalPrice']
+#         )
+
+#         shipping = ShippingAddress.objects.create(
+#             order=order,
+#             address=data['shippingAddress']['address'],
+#             city=data['shippingAddress']['city'],
+#             postalCode=data['shippingAddress']['postalCode'],
+#             country=data['shippingAddress']['country'],
+#         )
+#         for i in orderItems:
+#             book = Book.objects.get(_id=i['book'])
+
+#             item = OrderItem.objects.create(
+#                 book=book,
+#                 order=order,
+#                 name=book.name,
+#                 qty=i['qty'],
+#                 price=i['price'],
+#                 image=book.image.url,
+#             )
+#             book.countInStock -= item.qty
+#             book.save()
+
+#         serializer = OrderSerializer(order, many=False)
+#         return Response(serializer.data)
