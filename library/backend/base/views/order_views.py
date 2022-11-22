@@ -58,45 +58,19 @@ def addOrderItems(request):
 
 
 
-# @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
-# def addOrderItems(request):
-#     user = request.user
-#     data = request.data
 
-#     orderItems = data['orderItems']
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getOrderById(request, pk):
+    
+    user = request.user
 
-#     if orderItems and len(orderItems) == 0:
-#         return Response({'detail': 'No Order Items'}, status=status.HTTP_400_BAD_REQUEST)
-#     else:
-#         order = Order.objects.create(
-#             user=user,
-#             paymentMethod=data['paymentMethod'],
-#             taxPrice=data['taxPrice'],
-#             shippingPrice=data['shippingPrice'],
-#             totalPrice=data['totalPrice']
-#         )
-
-#         shipping = ShippingAddress.objects.create(
-#             order=order,
-#             address=data['shippingAddress']['address'],
-#             city=data['shippingAddress']['city'],
-#             postalCode=data['shippingAddress']['postalCode'],
-#             country=data['shippingAddress']['country'],
-#         )
-#         for i in orderItems:
-#             book = Book.objects.get(_id=i['book'])
-
-#             item = OrderItem.objects.create(
-#                 book=book,
-#                 order=order,
-#                 name=book.name,
-#                 qty=i['qty'],
-#                 price=i['price'],
-#                 image=book.image.url,
-#             )
-#             book.countInStock -= item.qty
-#             book.save()
-
-#         serializer = OrderSerializer(order, many=False)
-#         return Response(serializer.data)
+    try:
+        order = Order.objects.get(_id=pk)
+        if user.is_staff or order.user == user:
+            serializer = OrderSerializer(order, many=False)
+            return Response(serializer.data)
+        else:
+            Response({'detail':'Not authorized to view this order'},  status=status.HTTP_400_BAD_REQUEST)
+    except:
+        return Response({'detail':'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST)

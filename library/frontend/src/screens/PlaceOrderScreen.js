@@ -28,12 +28,10 @@ function PlaceOrderScreen() {
     Number(cart.taxPrice)
   ).toFixed(2);
 
-  console.log(cart.paymentMethod)
-  console.log(typeof cart.paymentMethod === 'undefined')
+
   
 
   useEffect(() => {
-    console.log('fff')
     if(!cart.paymentMethod || typeof cart.paymentMethod === 'undefined'){
       navigate('/payment')
     } 

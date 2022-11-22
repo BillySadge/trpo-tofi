@@ -30,7 +30,6 @@ function BookScreen() {
   }, [dispatch, id]);
 
   const addToCartHandler = () => {
-    console.log(id);
     navigate(`/cart/${id}?qty=${qty}`);
   };
 
