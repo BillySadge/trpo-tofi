@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
-import { Button, Row, Col, ListGroup, Image, Card } from "react-bootstrap";
+import { Row, Col, ListGroup, Image, Card } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import { useNavigate } from "react-router-dom";
 import { getOrderDetails } from '../actions/orderActions'
 
 
@@ -34,7 +33,7 @@ function OrderScreen() {
         dispatch(getOrderDetails(orderId.id))
     }
         
-  },[order, orderId.id])
+  },[dispatch, order, orderId.id])
 
   
   return loading ? (
