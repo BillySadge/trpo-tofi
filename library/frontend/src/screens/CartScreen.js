@@ -60,6 +60,7 @@ function CartScreen() {
         ) : (
           <ListGroup variant="flush">
             {cartItems.map((item) => (
+              console.log(item),
               <ListGroup.Item key={item.book}>
                 <Row>
                   <Col md={2}>
