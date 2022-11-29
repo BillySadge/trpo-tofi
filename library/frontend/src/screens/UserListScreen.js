@@ -7,7 +7,7 @@ import Message from "../components/Message";
 import FormContainer from "../components/FormContainer";
 import { register } from "../actions/userActions";
 import { useLocation, useNavigate } from "react-router-dom";
-import { listUsers } from '../actions/userActions'
+import { listUsers, deleteUser } from '../actions/userActions'
 
 function UserListScreen() {
     const dispatch = useDispatch()
@@ -17,6 +17,8 @@ function UserListScreen() {
     const {loading, error, users} = userList
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
+    const userDelete = useSelector(state => state.userDelete)
+    const { success:successDelete } = userDelete
 
     useEffect(() => {
         if(userInfo && userInfo.isAdmin){
@@ -25,11 +27,15 @@ function UserListScreen() {
         }else{
             navigate('/login')
         }
-    },[dispatch, navigate])
+    },[dispatch, navigate, successDelete])
 
 
     const deleteHandler = (id) => {
-        console.log(id)
+        // console.log(id)
+        if(window.confirm('Are you sure you want to delete this user?')){
+
+            dispatch(deleteUser(id))
+        }
     }
 
   return (
