@@ -6,7 +6,10 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import FormContainer from "../components/FormContainer";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { getUserDetails } from '../actions/userActions'
+import { getUserDetails, updateUser } from '../actions/userActions'
+import { USER_UPDATE_RESET } from '../constants/userConstants'
+
+
 function UserEditScreen() {
   const userId = useParams();
 
@@ -19,27 +22,36 @@ function UserEditScreen() {
   const navigate = useNavigate();
   const userDetails = useSelector((state) => state.userDetails);
   const { error, loading, user } = userDetails;
+  const userUpdate = useSelector((state) => state.userUpdate);
+  const { error: errorUpdate, loading: loadingUpdate, success: successUpdate } = userUpdate;
 
   useEffect(() => {
-    if(!user.name || user._id !== Number(userId.id)){
-        dispatch(getUserDetails(userId.id))
-                 
-        
+
+    if(successUpdate){
+      dispatch({type: USER_UPDATE_RESET})
+      navigate('/admin/userlist')
     }else{
-        setName(user.name)
-        setEmail(user.email)
-        setIsAdmin(user.isAdmin)  
+      if(!user.name || user._id !== Number(userId.id)){
+        dispatch(getUserDetails(userId.id))
+      }else{
+          setName(user.name)
+          setEmail(user.email)
+          setIsAdmin(user.isAdmin)  
+      }
     }
-  }, [user, userId.id]);
+  }, [user, userId.id,successUpdate, navigate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
+    dispatch(updateUser({_id: user._id, name, email, isAdmin}))
   };
   return (
     <div>
       <Link to="/admin/userList">Go Back</Link>
       <FormContainer>
         <h1>Edit User</h1>
+        {loadingUpdate && <Loader /> }
+        {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
         {loading ? <Loader /> :error ? <Message variant='danger'>{error}</Message>:
         (
             <Form onSubmit={submitHandler}>
