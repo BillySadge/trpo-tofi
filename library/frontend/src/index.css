@@ -16,3 +16,8 @@ h3{
 .rating span{
   margin:0.1rem;
 }
+
+.create-btn{
+  display: flex;
+  flex-direction: row-reverse;
+}
