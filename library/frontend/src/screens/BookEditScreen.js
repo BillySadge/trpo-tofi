@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from 'axios'
 import { Link } from "react-router-dom";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -20,6 +21,7 @@ function BookEditScreen() {
   const [category, setCategory] = useState("");
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -71,6 +73,31 @@ function BookEditScreen() {
 
     ))
   };
+
+
+  const uploadFileHandler = async (e) => {
+   const file = e.target.files[0]
+   const formData = new FormData()
+   formData.append('image', file)
+   formData.append('book_id', bookId.id)
+
+   setUploading(true)
+
+   try{
+    const config = {
+      headers:{
+        'Content-Type':'multipart/form-data'
+      }
+    }
+
+    const {data} = await axios.post('/api/books/upload/', formData, config)
+    setImage(data)
+    setUploading(false)
+   }catch(error){
+    setUploading(false)
+   }
+  }
+
   return (
     <div>
       <Link to="/admin/booklist">Go Back</Link>
@@ -110,6 +137,15 @@ function BookEditScreen() {
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
               ></Form.Control>
+              <Form.Control
+                type="file"
+                placeholder="Choose file"
+                onChange={uploadFileHandler}
+              ></Form.Control>
+
+              {/* <Form.File id='image-file' label='Choose file' custom onChange={uploadFileHandler}>
+              </Form.File> */}
+             {uploading && <Loader />}
             </Form.Group>
             <Form.Group controlId="brand">
               <Form.Label>Brand</Form.Label>
