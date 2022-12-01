@@ -23,3 +23,12 @@ def getBook(request, pk):
     return Response(serializer.data)
 
 
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])
+def deleteBook(request, pk):
+    book = Book.objects.get(_id=pk)
+    book.delete()
+
+    return Response('Book deleted')
+
+

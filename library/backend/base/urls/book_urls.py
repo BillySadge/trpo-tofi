@@ -6,4 +6,8 @@ urlpatterns = [
     path('', views.getBooks, name="books"),
     path('<str:pk>', views.getBook, name="book"),
 
+    path('delete/<str:pk>', views.deleteBook, name="book-delete"),
+
+    
+
 ]
