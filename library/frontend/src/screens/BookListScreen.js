@@ -7,7 +7,9 @@ import Message from "../components/Message";
 import FormContainer from "../components/FormContainer";
 import { register } from "../actions/userActions";
 import { useLocation, useNavigate } from "react-router-dom";
-import { listBooks, deleteBook } from '../actions/bookActions'
+import { listBooks, deleteBook, createBook } from '../actions/bookActions'
+import { BOOK_CREATE_RESET } from '../constants/bookConstants'
+
 
 function BookListScreen() {
     const dispatch = useDispatch()
@@ -17,17 +19,23 @@ function BookListScreen() {
     const {loading, error, books} = bookList
     const bookDelete = useSelector(state => state.bookDelete)
     const {loading:loadingDelete, error:errorDelete, success:successDelete} = bookDelete
+    const bookCreate = useSelector(state => state.bookCreate)
+    const {loading:loadingCreate, error:errorCreate, success:successCreate, book: createdBook} = bookCreate
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
 
     useEffect(() => {
-        if(userInfo && userInfo.isAdmin){
-            
-            dispatch(listBooks())
-        }else{
+        dispatch({type: BOOK_CREATE_RESET})
+        if(!userInfo.isAdmin){
             navigate('/login')
         }
-    },[dispatch, navigate, userInfo, successDelete])
+
+        if(successCreate){
+            navigate(`/admin/book/${createdBook._id}/edit`)
+        }else{
+            dispatch(listBooks())
+        }
+    },[dispatch, navigate, userInfo, successDelete, successCreate, createdBook])
 
 
     const deleteHandler = (id) => {
@@ -38,8 +46,8 @@ function BookListScreen() {
         }
     }
 
-    const createBookHandler = (book) => {
-        // create book
+    const createBookHandler = () => {
+        dispatch(createBook())
     }
 
   return (
@@ -57,6 +65,9 @@ function BookListScreen() {
 
       {loadingDelete && <Loader />}
       {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
+
+      {loadingCreate && <Loader />}
+      {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
 
 
       {loading 

@@ -28,7 +28,6 @@ function PlaceOrderScreen() {
     Number(cart.taxPrice)
   ).toFixed(2);
 
-
   
 
   useEffect(() => {

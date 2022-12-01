@@ -16,6 +16,7 @@ import OrderScreen from "./screens/OrderScreen";
 import UserListScreen from "./screens/UserListScreen";
 import UserEditScreen from "./screens/UserEditScreen";
 import BookListScreen from "./screens/BookListScreen";
+import BookEditScreen from "./screens/BookEditScreen";
    
 
 function App() {
@@ -45,6 +46,7 @@ function App() {
 
 
             <Route path="/admin/booklist" element={<BookListScreen />} />
+            <Route path="/admin/book/:id/edit" element={<BookEditScreen />} />
 
           </Routes>
         </Container>
