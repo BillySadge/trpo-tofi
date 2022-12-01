@@ -69,3 +69,13 @@ def deleteBook(request, pk):
     return Response('Book deleted')
 
 
+
+@api_view(['POST'])
+def uploadImage(request):
+    data = request.data
+    book_id = data['book_id']
+    book = Book.objects.get(_id=book_id)
+    book.image = request.FILES.get('image')
+    book.save()
+     
+    return Response('Image was uploaded')
