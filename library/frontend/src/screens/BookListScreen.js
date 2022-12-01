@@ -7,7 +7,7 @@ import Message from "../components/Message";
 import FormContainer from "../components/FormContainer";
 import { register } from "../actions/userActions";
 import { useLocation, useNavigate } from "react-router-dom";
-import { listBooks } from '../actions/bookActions'
+import { listBooks, deleteBook } from '../actions/bookActions'
 
 function BookListScreen() {
     const dispatch = useDispatch()
@@ -15,6 +15,8 @@ function BookListScreen() {
     const navigate = useNavigate()
     const bookList = useSelector(state => state.bookList)
     const {loading, error, books} = bookList
+    const bookDelete = useSelector(state => state.bookDelete)
+    const {loading:loadingDelete, error:errorDelete, success:successDelete} = bookDelete
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
 
@@ -25,13 +27,13 @@ function BookListScreen() {
         }else{
             navigate('/login')
         }
-    },[dispatch, navigate, userInfo])
+    },[dispatch, navigate, userInfo, successDelete])
 
 
     const deleteHandler = (id) => {
         // console.log(id)
         if(window.confirm('Are you sure you want to delete this book?')){
-
+            dispatch(deleteBook(id))
           //
         }
     }
@@ -52,6 +54,11 @@ function BookListScreen() {
                 </Button>
             </Col>
       </Row>
+
+      {loadingDelete && <Loader />}
+      {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
+
+
       {loading 
       ? <Loader />
       : error
