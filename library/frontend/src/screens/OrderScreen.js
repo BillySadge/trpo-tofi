@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, ListGroup, Image, Card } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap";
+import { Link, Navigate, useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { PayPalButton } from 'react-paypal-button-v2'
+import { PayPalButton } from "react-paypal-button-v2";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import { getOrderDetails, payOrder } from "../actions/orderActions";
-import { ORDER_PAY_RESET } from '../constants/orderConstants'
+import {
+  getOrderDetails,
+  payOrder,
+  deliverOrder,
+} from "../actions/orderActions";
+import {
+  ORDER_PAY_RESET,
+  ORDER_DELIVER_RESET,
+} from "../constants/orderConstants";
 
 function OrderScreen() {
   const orderId = useParams();
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const [sdkReady, setSdkReady] = useState(false);
 
   const orderDetails = useSelector((state) => state.orderDetails);
@@ -19,6 +26,12 @@ function OrderScreen() {
 
   const orderPay = useSelector((state) => state.orderPay);
   const { loading: loadingPay, success: successPay } = orderPay;
+
+  const orderDeliver = useSelector((state) => state.orderDeliver);
+  const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
   //   const navigate = useNavigate()
 
   //   console.log(orderId.id)
@@ -42,23 +55,36 @@ function OrderScreen() {
   //AUw2zgequHsvZdLccgrPVTAkQTPKg64ersnm9szrwjuHZWHLphhV1uHcnBD1hhXfAOhc6ZyRLXE_jRh_
 
   useEffect(() => {
-    if (!order || successPay ||  order._id !== Number(orderId.id)) {
-      dispatch({type:ORDER_PAY_RESET})
+    if (!userInfo) {
+      navigate("/login");
+    }
+
+    if (
+      !order ||
+      successPay ||
+      order._id !== Number(orderId.id) ||
+      successDeliver
+    ) {
+      dispatch({ type: ORDER_PAY_RESET });
+      dispatch({ type: ORDER_DELIVER_RESET });
       dispatch(getOrderDetails(orderId.id));
-    }else if(!order.isPaid){
-      if(!window.paypal){
-        addPayPalScript()
-      }else{
-        setSdkReady(true)
+    } else if (!order.isPaid) {
+      if (!window.paypal) {
+        addPayPalScript();
+      } else {
+        setSdkReady(true);
       }
     }
-  }, [dispatch, order, orderId.id, successPay]);
-
+  }, [dispatch, order, orderId.id, successPay, successDeliver]);
 
   const successPaymentHandler = (paymentResult) => {
-    console.log(orderId.id)
-    dispatch(payOrder(orderId.id, paymentResult))
-  }
+    console.log(orderId.id);
+    dispatch(payOrder(orderId.id, paymentResult));
+  };
+
+  const deliverHandler = () => {
+    dispatch(deliverOrder(order));
+  };
 
   return loading ? (
     <Loader />
@@ -175,24 +201,38 @@ function OrderScreen() {
                 </Row>
               </ListGroup.Item>
 
-
-
               {!order.isPaid && (
                 <ListGroup.Item>
                   {loadingPay && <Loader />}
 
                   {!sdkReady ? (
                     <Loader />
-                  ): (
-                    <PayPalButton 
+                  ) : (
+                    <PayPalButton
                       amount={order.totalPrice}
                       onSuccess={successPaymentHandler}
                     />
                   )}
                 </ListGroup.Item>
               )}
-
             </ListGroup>
+            {loadingDeliver && <Loader />}
+            {userInfo &&
+              userInfo.isAdmin &&
+              order.isPaid &&
+              !order.isDelivered && (
+                <ListGroup.Item>
+                  <div className="d-grid gap-2">
+                    <Button
+                      type="button"
+                      className="btn btn-block my-3"
+                      onClick={deliverHandler}
+                    >
+                      Mark As Deliver
+                    </Button>
+                  </div>
+                </ListGroup.Item>
+              )}
           </Card>
         </Col>
       </Row>
