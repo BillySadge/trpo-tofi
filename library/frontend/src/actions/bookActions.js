@@ -24,6 +24,12 @@ import {
   BOOK_UPDATE_SUCCESS,
   BOOK_UPDATE_FAIL,
   BOOK_UPDATE_RESET,
+
+  
+  BOOK_CREATE_REVIEW_REQUEST,
+  BOOK_CREATE_REVIEW_SUCCESS,
+  BOOK_CREATE_REVIEW_FAIL,
+  BOOK_CREATE_REVIEW_RESET,
 } from "../constants/bookConstants";
 
 export const listBooks = () => async (dispatch) => {
@@ -171,6 +177,40 @@ export const updateBook = (book) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: BOOK_UPDATE_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+
+export const createBookReview = (bookId, review) => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: BOOK_CREATE_REVIEW_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const axios = require("axios").default;
+    const { data } = await axios.post(`/api/books/${bookId}/reviews/`,review, config);
+
+    dispatch({
+      type: BOOK_CREATE_REVIEW_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: BOOK_CREATE_REVIEW_FAIL,
       payload:
         error.response && error.response.data.detail
           ? error.response.data.detail

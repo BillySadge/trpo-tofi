@@ -93,12 +93,12 @@ def createBookReview(request,pk):
     alreadyExist = book.review_set.filter(user=user).exists()
 
     if alreadyExist:
-        content = {'details': 'Book already reviewed'}
+        content = {'detail': 'Book already reviewed'}
         return Response(content, status=status.HTTP_400_BAD_REQUEST)
 
 
     elif data['rating'] == 0:
-        content = {'details': 'Please select a rating'}
+        content = {'detail': 'Please select a rating'}
         return Response(content, status=status.HTTP_400_BAD_REQUEST)
 
     else:
