@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate,useLocation } from 'react-router-dom'
 import { Row, Col } from "react-bootstrap";
 import Book from "../components/Book";
 import Loader from '../components/Loader'
@@ -8,12 +9,13 @@ import { listBooks } from "../actions/bookActions";
 function HomeScreen() {
   const dispatch = useDispatch();
   const bookList = useSelector((state) => state.bookList);
-
+  const location = useLocation()
   const { error, loading, books } = bookList;
+  let keyword = location.search
 
   useEffect(() => {
-    dispatch(listBooks());
-  }, [dispatch]);
+    dispatch(listBooks(keyword));
+  }, [dispatch, keyword]);
 
   return (
     <div>

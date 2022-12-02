@@ -10,7 +10,11 @@ from rest_framework import status
 
 @api_view(['GET'])
 def getBooks(request):
-    books = Book.objects.all()
+    query = request.query_params.get('keyword')
+    if query == None:
+        query = ''
+
+    books = Book.objects.filter(name__icontains=query)
     serializer = BookSerializer(books, many=True)
     return Response(serializer.data)
 
