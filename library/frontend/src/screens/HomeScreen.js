@@ -5,12 +5,13 @@ import { Row, Col } from "react-bootstrap";
 import Book from "../components/Book";
 import Loader from '../components/Loader'
 import Message from '../components/Message'
+import Paginate from '../components/Paginate'
 import { listBooks } from "../actions/bookActions";
 function HomeScreen() {
   const dispatch = useDispatch();
   const bookList = useSelector((state) => state.bookList);
   const location = useLocation()
-  const { error, loading, books } = bookList;
+  const { error, loading, books, page, pages } = bookList;
   let keyword = location.search
 
   useEffect(() => {
@@ -25,6 +26,7 @@ function HomeScreen() {
       ) : error ? (
         <Message variant='danger'>{error}</Message>
       ) : (
+        <div>
         <Row>
           {books.map((book) => (
             <Col key={book._id} sm={12} md={6} lg={4} xl={3}>
@@ -32,6 +34,8 @@ function HomeScreen() {
             </Col>
           ))}
         </Row>
+        <Paginate page={page} pages={pages} keyword={keyword} />
+        </div>
       )}
     </div>
   );

@@ -4,6 +4,7 @@ import { Table, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import Paginate from "../components/Paginate";
 import FormContainer from "../components/FormContainer";
 import { register } from "../actions/userActions";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -13,17 +14,17 @@ import { BOOK_CREATE_RESET } from '../constants/bookConstants'
 
 function BookListScreen() {
     const dispatch = useDispatch()
- 
+    const location = useLocation()
     const navigate = useNavigate()
     const bookList = useSelector(state => state.bookList)
-    const {loading, error, books} = bookList
+    const {loading, error, books, pages, page} = bookList
     const bookDelete = useSelector(state => state.bookDelete)
     const {loading:loadingDelete, error:errorDelete, success:successDelete} = bookDelete
     const bookCreate = useSelector(state => state.bookCreate)
     const {loading:loadingCreate, error:errorCreate, success:successCreate, book: createdBook} = bookCreate
     const userLogin = useSelector(state => state.userLogin)
     const { userInfo } = userLogin
-
+    let keyword = location.search
     useEffect(() => {
         dispatch({type: BOOK_CREATE_RESET})
         if(!userInfo.isAdmin){
@@ -33,9 +34,9 @@ function BookListScreen() {
         if(successCreate){
             navigate(`/admin/book/${createdBook._id}/edit`)
         }else{
-            dispatch(listBooks())
+            dispatch(listBooks(keyword))
         }
-    },[dispatch, navigate, userInfo, successDelete, successCreate, createdBook])
+    },[dispatch, navigate, userInfo, successDelete, successCreate, createdBook,keyword ])
 
 
     const deleteHandler = (id) => {
@@ -75,6 +76,7 @@ function BookListScreen() {
       : error
       ?( <Message variant='danger'>{error}</Message> )
     :(
+        <div>
         <Table striped bordered hover responsive className='table-sm'>
             <thead>
                 <tr> 
@@ -110,6 +112,8 @@ function BookListScreen() {
                 ))}
             </tbody>
         </Table>
+        <Paginate pages={pages} page={page} isAdmin={true} />
+        </div>
     )}
     </div>
   )

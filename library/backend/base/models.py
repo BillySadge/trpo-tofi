@@ -23,6 +23,10 @@ class Book(models.Model):
         return self.name
 
 
+    class Meta:
+        ordering = ['_id']
+
+
 class Review(models.Model):
     book = models.ForeignKey(Book, on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
