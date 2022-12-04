@@ -30,6 +30,12 @@ import {
   BOOK_CREATE_REVIEW_SUCCESS,
   BOOK_CREATE_REVIEW_FAIL,
   BOOK_CREATE_REVIEW_RESET,
+
+
+  
+  BOOK_TOP_REQUEST,
+  BOOK_TOP_SUCCESS,
+  BOOK_TOP_FAIL,
 } from "../constants/bookConstants";
 
 export const listBooks = (keyword = '') => async (dispatch) => {
@@ -45,6 +51,27 @@ export const listBooks = (keyword = '') => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: BOOK_LIST_FAIL,
+      payload:
+        error.response && error.response.data.detail
+          ? error.response.data.detail
+          : error.message,
+    });
+  }
+};
+
+export const listTopBooks = () => async (dispatch) => {
+  try {
+    dispatch({ type: BOOK_TOP_REQUEST });
+
+    const { data } = await axios.get(`/api/books/top/`);
+
+    dispatch({
+      type: BOOK_TOP_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: BOOK_TOP_FAIL,
       payload:
         error.response && error.response.data.detail
           ? error.response.data.detail

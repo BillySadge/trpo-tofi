@@ -6,6 +6,7 @@ import Book from "../components/Book";
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import Paginate from '../components/Paginate'
+import BookCarousel from '../components/BookCarousel'
 import { listBooks } from "../actions/bookActions";
 function HomeScreen() {
   const dispatch = useDispatch();
@@ -20,6 +21,8 @@ function HomeScreen() {
 
   return (
     <div>
+      {!keyword && <BookCarousel />}
+      
       <h1>Latest Books</h1>
       {loading ? (
         <Loader />

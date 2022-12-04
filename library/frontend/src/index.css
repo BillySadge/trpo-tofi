@@ -21,3 +21,49 @@ h3{
   display: flex;
   flex-direction: row-reverse;
 }
+
+
+.carousel-item {
+  background-color: darkgrey;
+}
+
+.carousel-item-next,
+.carousel-item-prev,
+.carousel-item.active {
+  display: flex;
+  /* flex-direction: column; */
+}
+.carousel-caption {
+  /* position: flex;
+  margin-top: 40%;
+  margin-left: 50%; */
+  position: absolute;
+  top: 0;
+}
+
+.carousel-caption h4 {
+  color: #fff;
+}
+
+.carousel img {
+  display:block;
+  height: 300px;
+  padding: 30px;
+  margin: 40px;
+  border-radius: 20%;
+  /* margin-left: 30%; */
+  margin-left: auto;
+  margin-right: auto;
+}
+.carousel a {
+  margin: 0 auto;
+}
+@media (max-width: 900px) {
+  .carousel-caption h2 {
+    font-size: 2.5vw;
+  }
+}
+
+button > .active {
+  color: blue;
+}

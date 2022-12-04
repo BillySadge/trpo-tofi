@@ -41,6 +41,12 @@ def getBooks(request):
     return Response({'books': serializer.data, 'page': page, 'pages': paginator.num_pages})
 
 
+@api_view(['GET'])
+def getTopBooks(request):
+    books = Book.objects.filter(rating__gte=4).order_by('-rating')[0:5]
+    serializer = BookSerializer(books, many=True)
+    return Response(serializer.data)
+
 
 @api_view(['GET'])
 def getBook(request, pk):
