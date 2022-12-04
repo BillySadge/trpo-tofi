@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate,useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { Row, Col } from "react-bootstrap";
 import Book from "../components/Book";
 import Loader from '../components/Loader'

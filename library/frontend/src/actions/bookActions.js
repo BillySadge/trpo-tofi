@@ -17,19 +17,16 @@ import {
   BOOK_CREATE_REQUEST,
   BOOK_CREATE_SUCCESS,
   BOOK_CREATE_FAIL,
-  BOOK_CREATE_RESET,
 
 
   BOOK_UPDATE_REQUEST,
   BOOK_UPDATE_SUCCESS,
   BOOK_UPDATE_FAIL,
-  BOOK_UPDATE_RESET,
 
   
   BOOK_CREATE_REVIEW_REQUEST,
   BOOK_CREATE_REVIEW_SUCCESS,
   BOOK_CREATE_REVIEW_FAIL,
-  BOOK_CREATE_REVIEW_RESET,
 
 
   
@@ -158,7 +155,7 @@ export const deleteBook = (id) => async (dispatch, getState) => {
     };
     const axios = require("axios").default;
     const { data } = await axios.delete(`/api/books/delete/${id}`, config);
-
+    console.log(data)
     dispatch({
       type: BOOK_DELETE_SUCCESS
     });

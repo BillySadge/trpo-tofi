@@ -63,7 +63,3 @@ h3{
     font-size: 2.5vw;
   }
 }
-
-button > .active {
-  color: blue;
-}

@@ -1,20 +1,11 @@
 import React from 'react'
-import { Nav, Pagination } from 'react-bootstrap'
+import { Pagination } from 'react-bootstrap'
 import { LinkContainer } from 'react-router-bootstrap'
-import { NavLink } from 'react-router-dom'
-import { Link } from 'react-router-dom'
 function Paginate({ pages, page, keyword = '', isAdmin = false }) {
     if (keyword) {
         keyword = keyword.split('?keyword=')[1].split('&')[0]
     }
 
-    
-
-    const   test = (x,page) => {
-      console.log("x : ", x)
-      console.log("page : ", page)
-      
-    }
     return (pages > 1 && (
         <Pagination>
             {[...Array(pages).keys()].map((x) => (
