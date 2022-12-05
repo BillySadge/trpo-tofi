@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios'
 import { Link } from "react-router-dom";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import FormContainer from "../components/FormContainer";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { listBookDetails, updateBook } from "../actions/bookActions";
 import { BOOK_UPDATE_RESET } from '../constants/bookConstants'
 
@@ -53,7 +53,7 @@ function BookEditScreen() {
 
 
     
-  }, [dispatch, book, book.id, navigate, successUpdate]);
+  }, [dispatch, book, book._id, navigate, successUpdate]);
 
   const submitHandler = (e) => {
     e.preventDefault();

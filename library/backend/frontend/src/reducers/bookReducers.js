@@ -59,7 +59,7 @@ export const bookDetailsReducer = (
 
     case BOOK_DETAILS_FAIL:
       return { loading: false, error: action.payload };
-
+    
     default:
       return state;
   }

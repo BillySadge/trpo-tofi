@@ -17,6 +17,7 @@ function HomeScreen() {
 
   useEffect(() => {
     dispatch(listBooks(keyword));
+    
   }, [dispatch, keyword]);
 
   return (
@@ -24,9 +25,9 @@ function HomeScreen() {
       {!keyword && <BookCarousel />}
       
       <h1>Latest Books</h1>
-      {loading ? (
-        <Loader />
-      ) : error ? (
+      {loading ? (<Loader />
+      )
+      : error ? (
         <Message variant='danger'>{error}</Message>
       ) : (
         <div>

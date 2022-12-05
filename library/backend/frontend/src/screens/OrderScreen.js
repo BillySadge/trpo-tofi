@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap";
-import { Link, Navigate, useParams, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { PayPalButton } from "react-paypal-button-v2";
 import Message from "../components/Message";
@@ -75,7 +75,7 @@ function OrderScreen() {
         setSdkReady(true);
       }
     }
-  }, [dispatch, order, orderId.id, successPay, successDeliver]);
+  }, [dispatch, order, orderId.id, successPay, successDeliver,navigate, userInfo]);
 
   const successPaymentHandler = (paymentResult) => {
     console.log(orderId.id);

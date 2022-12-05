@@ -17,6 +17,22 @@ h3{
   margin:0.1rem;
 }
 
+.ld-custom {
+  /* display: block;
+  margin-right: 50%;
+  margin-left: 50%; */
+  /* display: flex; */
+  /* position: absolute;
+  top:35%;
+  left: 40%; */
+
+  margin-left: 38%;
+}
+@media only screen and (max-width: 600px) {
+  .ld-custom {
+    margin-left: 15%;
+  }
+}
 .create-btn{
   display: flex;
   flex-direction: row-reverse;
@@ -62,4 +78,11 @@ h3{
   .carousel-caption h2 {
     font-size: 2.5vw;
   }
+}
+
+
+.mynav {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }

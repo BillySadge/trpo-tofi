@@ -41,10 +41,13 @@ export const listBooks = (keyword = '') => async (dispatch) => {
 
     const { data } = await axios.get(`/api/books${keyword}`);
 
-    dispatch({
-      type: BOOK_LIST_SUCCESS,
-      payload: data,
-    });
+    setTimeout(()=> {
+      
+      dispatch({
+        type: BOOK_LIST_SUCCESS,
+        payload: data,
+      });
+    }, 1500)
   } catch (error) {
     dispatch({
       type: BOOK_LIST_FAIL,
@@ -62,10 +65,13 @@ export const listTopBooks = () => async (dispatch) => {
 
     const { data } = await axios.get(`/api/books/top/`);
 
+
+    setTimeout(()=> {
     dispatch({
       type: BOOK_TOP_SUCCESS,
       payload: data,
     });
+    },1500)
   } catch (error) {
     dispatch({
       type: BOOK_TOP_FAIL,
@@ -83,11 +89,11 @@ export const listBookDetails = (id) => async (dispatch) => {
     dispatch({ type: BOOK_DETAILS_REQUEST });
 
     const { data } = await axios.get(`/api/books/${id}`);
-
     dispatch({
-      type: BOOK_DETAILS_SUCCESS,
-      payload: data,
+        type: BOOK_DETAILS_SUCCESS,
+        payload: data,
     });
+
   } catch (error) {
     dispatch({
       type: BOOK_DETAILS_FAIL,

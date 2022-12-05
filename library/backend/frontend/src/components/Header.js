@@ -22,9 +22,10 @@ function Header() {
           </LinkContainer>
 
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
+          <Navbar.Collapse id="basic-navbar-nav" className="mynav">
             <SearchBox />
-            <Nav className="mr-auto">
+            <div class="mynav">
+            <Nav className="ml-auto">
               <LinkContainer to="/cart">
                 <Nav.Link>
                   <i className="fas fa-shopping-cart"></i>Cart
@@ -65,6 +66,7 @@ function Header() {
               </NavDropdown>
               )}
             </Nav>
+            </div>
           </Navbar.Collapse>
         </Container>
       </Navbar>

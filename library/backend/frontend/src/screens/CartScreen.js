@@ -27,7 +27,7 @@ function CartScreen() {
   // const userDetails = useSelector(state => state.userDetails);
   // const { user } = userDetails;
   const userLogin = useSelector(state => state.userLogin);
-  const { error, loading, userInfo } = userLogin;
+  const { userInfo } = userLogin;
 
   useEffect(() => {
     if (bookId.id) {
@@ -60,7 +60,6 @@ function CartScreen() {
         ) : (
           <ListGroup variant="flush">
             {cartItems.map((item) => (
-              console.log(item),
               <ListGroup.Item key={item.book}>
                 <Row>
                   <Col md={2}>
