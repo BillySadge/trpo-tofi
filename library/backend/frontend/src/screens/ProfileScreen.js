@@ -26,7 +26,7 @@ function ProfileScreen() {
   const { userInfo } = userLogin;
 
   const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
-  const { success } = userUpdateProfile;
+  const { success, error:errorUpdate } = userUpdateProfile;
 
   const orderListMy = useSelector((state) => state.orderListMy);
   const { loading:loadingOrders, error:errorOrders, orders } = orderListMy;
@@ -69,9 +69,12 @@ function ProfileScreen() {
   return (
     <Row>
       <Col md={3}>
+        
         <h2>User Profile</h2>
         {message && <Message variant="danger">{message}</Message>}
         {error && <Message variant="danger">{error}</Message>}
+        {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
+        
         {loading && <Loader />}
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="name">

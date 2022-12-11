@@ -92,6 +92,9 @@ MIDDLEWARE = [
 
 
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+
+
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -99,6 +102,9 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 ROOT_URLCONF = "backend.urls"
 
@@ -118,18 +124,34 @@ TEMPLATES = [
     },
 ]
 
+
+
+
+
 WSGI_APPLICATION = "backend.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql",
+#         "NAME": "railway",
+#         "USER": "postgres",
+#         "PASSWORD":"UaB99PxdJZZM2JDsmeO1",
+#         "HOST":"containers-us-west-128.railway.app",
+#         "PORT": "5895",
+#     }
+# }
+
+# andreilib123
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
-}
+}   
 
 
 # Password validation
@@ -138,9 +160,18 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+            'OPTIONS': {
+            'user_attributes': (
+                'username','email', 'name'
+            ),
+            'max_similarity': 0.5
+        }
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        'OPTIONS':{
+            'min_length': 8,
+        }
     },
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
@@ -174,11 +205,9 @@ STATICFILES_DIRS = [
     BASE_DIR / 'frontend/build/static',
 ]
 
-WEBPACK_LOADER = {
-    'MANIFEST_FILE': os.path.join(BASE_DIR, "frontend/build/manifest.json"),
-}
 
-MEDIA_ROOT = 'static/images'
+MEDIA_ROOT = BASE_DIR /'static/images'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

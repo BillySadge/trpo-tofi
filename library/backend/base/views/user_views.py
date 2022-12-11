@@ -12,6 +12,19 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.hashers import make_password
 from rest_framework import status
 
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext as _
+
+
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
+
+from base.validator.MyValidator import MyValidator
+
+
+
+
+
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -28,22 +41,30 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 
+
+
+
 @api_view(['POST'])
 def registerUser(request):
     data = request.data
-
+    Validator = MyValidator()
 
     try:
+        # validate_password(data['password'])
+        print(Validator.validate_password(data['password']))
+        print(data['password'])
         user = User.objects.create( 
-            first_name = data['name'],
-            username=data['email'],
-            email=data['email'],
-            password=make_password(data['password'])
+                first_name = data['name'],
+                username=data['email'],
+                email=data['email'],
+                password=make_password(data['password'])
         )
-
         serializer = UserSerializerWithToken(user, many=False)
         return Response(serializer.data)
-    except: 
+    except ValidationError as e:
+        message = {'detail': e}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+    except:
         message = {'detail': 'User with this email already exists'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
@@ -53,15 +74,22 @@ def updateUserProfile(request):
     user = request.user
     serializer = UserSerializerWithToken(user, many=False)
     data = request.data
+    Validator = MyValidator()
+    try:
+        
+        user.first_name = data['name']
+        user.username = data['email']
+        user.email = data['email']
 
-    user.first_name = data['name']
-    user.username = data['email']
-    user.email = data['email']
+        if data['password'] != '':
+            Validator.validate_password(data['password'])
+            user.password = make_password(data['password'])
 
-    if data['password'] != '':
-        user.password = make_password(data['password'])
+        user.save()
 
-    user.save()
+    except ValidationError as e:
+        message = {'detail': e}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
     return Response(serializer.data)
 

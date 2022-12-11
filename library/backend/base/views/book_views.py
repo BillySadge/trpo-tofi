@@ -9,16 +9,18 @@ from base.models import Book,Review
 from base.serializer import BookSerializer
 
 from rest_framework import status
-
+from django.core.exceptions import ValidationError
+from base.validator.MyValidator import MyValidator
 
 @api_view(['GET'])
 def getBooks(request):
     query = request.query_params.get('keyword')
+
     if query == None:
         query = ''
 
     books = Book.objects.filter(name__icontains=query)
-
+    # print(books.query)
     page = request.query_params.get('page')
     paginator = Paginator(books, 8)
 
@@ -35,6 +37,7 @@ def getBooks(request):
         page = 1
 
 
+
     page = int(page)
     # print(page)
     serializer = BookSerializer(books, many=True)
@@ -44,6 +47,7 @@ def getBooks(request):
 @api_view(['GET'])
 def getTopBooks(request):
     books = Book.objects.filter(rating__gte=4).order_by('-rating')[0:5]
+    # print(books.query)
     serializer = BookSerializer(books, many=True)
     return Response(serializer.data)
 
@@ -68,6 +72,8 @@ def createBook(request):
         category='Sample Category',
         description=''
     )
+
+    
     serializer = BookSerializer(book, many=False)
     return Response(serializer.data)
 
@@ -78,14 +84,22 @@ def createBook(request):
 @permission_classes([IsAdminUser])
 def updateBook(request, pk):
     data = request.data
-    book = Book.objects.get(_id=pk)
-    book.name = data['name']
-    book.price = data['price']
-    book.brand = data['brand']
-    book.countInStock = data['countInStock']
-    book.category = data['category']
-    book.description = data['description']
-    book.save()
+    try: 
+        validator = MyValidator()
+        print(data['price'])
+        validator.validate_book(float(data['price']))
+        book = Book.objects.get(_id=pk)
+        book.name = data['name']
+        book.price = data['price']
+        book.brand = data['brand']
+        book.countInStock = data['countInStock']
+        book.category = data['category']
+        book.description = data['description']
+        book.save()
+    except ValidationError as e:
+        message = {'detail': e}
+        return Response(message, status=status.HTTP_400_BAD_REQUEST)
+
 
     serializer = BookSerializer(book, many=False)
     return Response(serializer.data)
@@ -96,6 +110,7 @@ def updateBook(request, pk):
 @permission_classes([IsAdminUser])
 def deleteBook(request, pk):
     book = Book.objects.get(_id=pk)
+    # print(book)
     book.delete()
 
     return Response('Book deleted')

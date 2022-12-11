@@ -53,7 +53,7 @@ function BookEditScreen() {
 
 
     
-  }, [dispatch, book, book._id, navigate, successUpdate]);
+  }, [dispatch, book, book._id,bookId.id, navigate, successUpdate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -126,6 +126,8 @@ function BookEditScreen() {
                 type="number"
                 placeholder="Enter price"
                 value={price}
+                min="0"
+                step=".01"
                 onChange={(e) => setPrice(e.target.value)}
               ></Form.Control>
             </Form.Group>
@@ -159,9 +161,12 @@ function BookEditScreen() {
             <Form.Group controlId="countinstock">
               <Form.Label>Stock</Form.Label>
               <Form.Control
+                
                 type="number"
                 placeholder="Enter stock"
                 value={countInStock}
+                min="1"
+                
                 onChange={(e) => setCountInStock(e.target.value)}
               ></Form.Control>
             </Form.Group>
