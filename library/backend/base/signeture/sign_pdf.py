@@ -67,6 +67,7 @@ def sign_file(sign_img: str, input_file: str, signatureID: str, x_coordinate: in
     if not output_file:
         output_file = (os.path.splitext(input_file)[0]) + "_signed.pdf"
     PDFNet.Initialize("demo:1670960872313:7a97ac550300000000c15d5886bdec5cb4a6d245b6c0883eda51597b68")
+    # print(input_file)
     doc = PDFDoc(input_file)
     # test = doc.GetPage(1)
     # print(inspect.getmembers(test))

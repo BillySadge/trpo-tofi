@@ -1,0 +1,239 @@
+{
+  "name": "frontend",
+  "proxy": "http://127.0.0.1:8000/",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^0.21.1",
+    "react": "^18.2.0",
+    "react-bootstrap": "^2.5.0",
+    "react-dom": "^18.2.0",
+    "react-paypal-button-v2": "^2.6.3",
+    "react-redux": "^8.0.4",
+    "react-router-bootstrap": "^0.26.2",
+    "react-router-dom": "^6.4.2",
+    "react-scripts": "5.0.1",
+    "react-spinners": "^0.13.6",
+    "redux": "^4.2.0",
+    "redux-devtools-extension": "^2.13.9",
+    "redux-thunk": "^2.4.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
+
+
+
+
+
+
+
+
+
+import React, { useState, useEffect } from "react";
+import { Row, Col, ListGroup, Image, Card } from "react-bootstrap";
+import { Link, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import Message from "../components/Message";
+import Loader from "../components/Loader";
+import { getOrderDetails, payOrder } from "../actions/orderActions";
+
+function OrderScreen() {
+  const orderId = useParams();
+  const dispatch = useDispatch();
+
+  const [sdkReady, setSdkReady] = useState(false);
+
+  const orderDetails = useSelector((state) => state.orderDetails);
+  const { order, error, loading } = orderDetails;
+
+  const orderPay = useSelector((state) => state.orderPay);
+  const { loading: loadingPay, success: successPay } = orderPay;
+  //   const navigate = useNavigate()
+
+  //   console.log(orderId.id)
+  if (!loading && !error) {
+    order.itemsPrice = order.orderItems
+      .reduce((acc, item) => acc + item.price * item.qty, 0)
+      .toFixed(2);
+  }
+
+  const addPayPalScript = () => {
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src =
+      "https://www.paypal.com/sdk/js?client-id=AUw2zgequHsvZdLccgrPVTAkQTPKg64ersnm9szrwjuHZWHLphhV1uHcnBD1hhXfAOhc6ZyRLXE_jRh_";
+    script.async = true;
+    script.onload = () => {
+      setSdkReady(true);
+    };
+    document.body.appendChild(script);
+  };
+  //AUw2zgequHsvZdLccgrPVTAkQTPKg64ersnm9szrwjuHZWHLphhV1uHcnBD1hhXfAOhc6ZyRLXE_jRh_
+
+  useEffect(() => {
+    if (!order || successPay ||  order._id !== Number(orderId.id)) {
+      dispatch(getOrderDetails(orderId.id));
+    }else if(!order.isPaid){
+      if(!window.paypal){
+        addPayPalScript()
+      }else{
+        setSdkReady(true)
+      }
+    }
+  }, [dispatch, order, orderId.id, successPay]);
+
+
+  const successPaymentHandler = (paymentResult) => {
+    dispatch(payOrder(orderId, paymentResult))
+  }
+
+  return loading ? (
+    <Loader />
+  ) : error ? (
+    <Message variant="danger">{error}</Message>
+  ) : (
+    <div>
+      <h1>Order: {order._id}</h1>
+      <Row>
+        <Col md={8}>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <h2>Shipping</h2>
+              <p>
+                <strong>Name: </strong> {order.user.name}{" "}
+              </p>
+              <p>
+                <strong>Email: </strong>{" "}
+                <a href={`mailto:${order.user.email}`}>{order.user.email}</a>{" "}
+              </p>
+
+              <p>
+                <strong>Shipping: </strong>
+                {order.shippingAddress?.address}, {order.shippingAddress?.city}{" "}
+                {order.shippingAddress?.postalCode},{" "}
+                {order.shippingAddress?.country}
+              </p>
+
+              {order.isDelivered ? (
+                <Message variant="success">
+                  Delivered on {order.deliveredAt}
+                </Message>
+              ) : (
+                <Message variant="warning">Not Delivered</Message>
+              )}
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <h2>Payment Method</h2>
+
+              <p>
+                <strong>Method: </strong>
+                {order.paymentMethod}
+              </p>
+
+              {order.isPaid ? (
+                <Message variant="success">Paid on {order.paidAt}</Message>
+              ) : (
+                <Message variant="warning">Not Paid</Message>
+              )}
+            </ListGroup.Item>
+            <ListGroup.Item>
+              <h2>Order Items</h2>
+              {order.orderItems.length === 0 ? (
+                <Message variant="info">Your order is empty</Message>
+              ) : (
+                <ListGroup variant="flush">
+                  {order.orderItems.map((item, index) => (
+                    <ListGroup.Item key={index}>
+                      <Row>
+                        <Col md={1}>
+                          <Image
+                            src={item.image}
+                            alt={item.name}
+                            fluid
+                            rounded
+                          />
+                        </Col>
+                        <Col>
+                          <Link to={`/book/${item.book}`}>{item.name}</Link>
+                        </Col>
+                        <Col md={4}>
+                          {item.qty} X ${item.price} = $
+                          {(item.qty * item.price).toFixed(2)}
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+                  ))}
+                </ListGroup>
+              )}
+            </ListGroup.Item>
+          </ListGroup>
+        </Col>
+
+        <Col md={4}>
+          <Card>
+            <ListGroup variant="flush">
+              <ListGroup.Item>
+                <h2>Order Summary</h2>
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Row>
+                  <Col>Item: </Col>
+                  <Col>${order.itemsPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Row>
+                  <Col>Shipping: </Col>
+                  <Col>${order.shippingPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Tax: </Col>
+                  <Col>${order.taxPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+              <ListGroup.Item>
+                <Row>
+                  <Col>Total: </Col>
+                  <Col>${order.totalPrice}</Col>
+                </Row>
+              </ListGroup.Item>
+            </ListGroup>
+          </Card>
+        </Col>
+      </Row>
+    </div>
+  );
+}
+
+export default OrderScreen;

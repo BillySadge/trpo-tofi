@@ -70,10 +70,11 @@ def createBook(request):
         user=user,
         name='Sample Name',
         price=0,
-        brand='Sample Brand',
-        countInStock=0,
+        author='Sample Author',
+        countInStock=1,
         category='Sample Category',
         description=''
+        
     )
 
     
@@ -94,10 +95,15 @@ def updateBook(request, pk):
         book = Book.objects.get(_id=pk)
         book.name = data['name']
         book.price = data['price']
-        book.brand = data['brand']
+        book.author = data['author']
         book.countInStock = data['countInStock']
         book.category = data['category']
         book.description = data['description']
+        # book.uploadSrc = data['bookSrc']
+
+        # print(data['bookSrc'])
+        if(data["bookSrc"] == None):
+            raise ValidationError('ага а книгу не загрузишь? мы тут скамом не занимаемся')
         book.save()
     except ValidationError as e:
         message = {'detail': e}
@@ -113,10 +119,10 @@ def updateBook(request, pk):
 @permission_classes([IsAdminUser])
 def deleteBook(request, pk):
     book = Book.objects.get(_id=pk)
-    # print(book)
-    sign_pdf.load()
-    sign_pdf.sign_file(str(book.uploadSrc),"ANDREI CHAPLINSKI", 280, 0)
-    # book.delete()
+    # # print(book)
+    # sign_pdf.load()
+    # sign_pdf.sign_file(str(book.uploadSrc),"ANDREI CHAPLINSKI", 280, 0)
+    book.delete()
 
     return Response('Book deleted')
 

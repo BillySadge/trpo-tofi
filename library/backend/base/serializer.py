@@ -81,11 +81,16 @@ class SignatureBookSerializer(serializers.ModelSerializer):
         model = SignatureBook
         fields = '__all__'
 
+    def get_sbooks(self,obj):
+        sbooks = obj.signaturebook_set.all()
+        serializer = ReviewSerializer(sbooks, many=True)
+        return serializer.data
+
 class OrderSerializer(serializers.ModelSerializer):
     orderItems = serializers.SerializerMethodField(read_only=True)
     shippingAddress = serializers.SerializerMethodField(read_only=True)
     user = serializers.SerializerMethodField(read_only=True)
-    signiture = serializers.SerializerMethodField(read_only=True)
+    signature = serializers.SerializerMethodField(read_only=True)
     class Meta:
         model = Order
         fields = '__all__'
@@ -116,7 +121,7 @@ class OrderSerializer(serializers.ModelSerializer):
         return serializer.data
 
 
-    def get_signiture(self, obj):
+    def get_signature(self, obj):
         try:
             signature = SignatureSerializer(obj.signature, many=False).data
         except:
@@ -125,7 +130,7 @@ class OrderSerializer(serializers.ModelSerializer):
         return signature
 
 
-    def get_signitureBook(self, obj):
+    def get_signatureBook(self, obj):
         try:
             signatureBook = SignatureBookSerializer(obj.signatureBook, many=False).data
         except:

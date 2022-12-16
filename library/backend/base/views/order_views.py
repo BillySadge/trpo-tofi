@@ -3,10 +3,6 @@ from io import BytesIO
 from PIL import Image
 from django.core.files import File
 from django.http import HttpResponse
-import requests
-import re
-import base64
-import data_url
 from binascii import a2b_base64
 import urllib
 
@@ -27,12 +23,21 @@ def addOrderItems(request):
     user = request.user
     data = request.data
     # print(data)
+    # print(order)
+    # print(data)
     orderItems = data['orderItems']
 
     if orderItems and len(orderItems) == 0:
         return Response({'detail':'No Order Items'}, status=status.HTTP_400_BAD_REQUEST)
     else:
 
+
+
+        
+
+
+
+        
         order = Order.objects.create(
             user=user,
             paymentMethod = data['paymentMethod'],
@@ -40,21 +45,23 @@ def addOrderItems(request):
             shippingPrice = data['shippingPrice'],
             totalPrice=data['totalPrice']
         )
-
-
-        # shipping = ShippingAddress.objects.create(
-        #     order = order,
-        #     address=data['shippingAddress']['address'],
-        #     city=data['shippingAddress']['city'],
-        #     postalCode=data['shippingAddress']['postalCode'],
-        #     country=data['shippingAddress']['country'],
-        # )
-
+        imgUrl = data['signature']['signatureImg']
+    
+        dimg = str(imgUrl)
+        response = urllib.request.urlopen(dimg)
+       
 
         signature = Signature.objects.create(
             order = order,
             image = data['signature']['signatureImg']
+            # image = data['signature']['signatureImg']
+
         )
+
+        with open(f'static/images/signatures/signature{signature._id}.png', 'wb') as f:
+            f.write(response.file.read())   
+        signature.image = f'static/images/signatures/signature{signature._id}.png'
+        signature.save()
 
         for i in orderItems:
             book = Book.objects.get(_id=i['book'])
@@ -68,7 +75,7 @@ def addOrderItems(request):
                 image=book.image.url,
             )
 
-            book.countInStock -= item.qty
+            # book.countInStock -= item.qty
             book.save()
 
             
@@ -81,11 +88,15 @@ def addOrderItems(request):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def getOrderById(request, pk):
-    
     user = request.user
 
+    
+    
+   
     try:
         order = Order.objects.get(_id=pk)
+        
+        
         if user.is_staff or order.user == user:
             serializer = OrderSerializer(order, many=False)
             return Response(serializer.data)
@@ -109,7 +120,7 @@ def getMyOrders(request):
 
 @api_view(['GET'])
 # @permission_classes([IsAuthenticated])
-def getSignitures(request):
+def getSignatures(request):
     user = request.user
     signatures = Signature.order_set.all()
     serializer = Signature(signatures, many=True)
@@ -138,16 +149,30 @@ def updateOrderToPaid(request, pk):
         book = orderItems[0].book,
     )
 
+
+    # sign = Signature.objects.get(order__pk=pk)
+    # print("abc")
+    # print(sign.image)
+    # data = str(sign.image)
+    # response = urllib.request.urlopen(data)
+    # with open(f'static/images/signatures/signature{sign._id}.png', 'wb') as f:
+    #     f.write(response.file.read())   
+    # sign.image = f'static/images/signatures/signature{sign._id}.png'
+    # sign.save()
+
+
+    # data = str(sign.image)
+    # response = urllib.request.urlopen(data)
+    # with open(f'static/images/signatures/signature{sign._id}.png', 'wb') as f:
+    #     f.write(response.file.read())   
+    # sign.image = f'static/images/signatures/signature{sign._id}.png'
+    # sign.save()
     
-    data = str(sign.image)
-    response = urllib.request.urlopen(data)
-    with open(f'static/images/signatures/signature{sign._id}.png', 'wb') as f:
-        f.write(response.file.read())
-
+   
     
 
 
-
+    
 
     sign_pdf.load()
     sign_pdf.sign_file(f'static/images/signatures/signature{sign._id}.png',str(sbook.book.uploadSrc),"ANDREI CHAPLINSKI", 280, 0, output_file=f'static/images/books/{sbook.book}{sign._id}_signed.pdf')
@@ -168,7 +193,8 @@ def downloadPDF(request, pk):
 
     order = Order.objects.get(_id=pk)
     sign = Signature.objects.get(order__pk=pk)
-    sbook = SignatureBook.objects.get(signature_id=sign._id)
+    
+    sbook = SignatureBook.objects.get(signature__pk=sign._id)
     print(sign._id)
     path_to_file = f'static/images/books/{sbook.book}{sign._id}_signed.pdf'
     print(path_to_file)

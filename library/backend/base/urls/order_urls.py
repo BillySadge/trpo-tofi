@@ -6,7 +6,7 @@ urlpatterns = [
     path('add/', views.addOrderItems, name='orders-add'),
     path('myorders/', views.getMyOrders, name='myorders'),
     path('myorders/', views.getMyOrders, name='myorders'),
-    # path('signatures/', views.getSignitures, name='signatures'),
+    # path('signatures/', views.getSignatures, name='signatures'),
 
     path('<str:pk>/deliver/', views.downloadPDF, name='order-download'),
     path('<str:pk>/', views.getOrderById, name='user-order'),
