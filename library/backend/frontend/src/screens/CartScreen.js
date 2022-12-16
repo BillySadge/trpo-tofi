@@ -23,10 +23,9 @@ function CartScreen() {
   const { cartItems } = cart;
   const dispatch = useDispatch();
 
-
   // const userDetails = useSelector(state => state.userDetails);
   // const { user } = userDetails;
-  const userLogin = useSelector(state => state.userLogin);
+  const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
   useEffect(() => {
@@ -35,21 +34,21 @@ function CartScreen() {
     }
   }, [dispatch, bookId.id, qty]);
 
-
   const removeFromCartHandler = (id) => {
-    dispatch(removeFromCart(id))
-  }
+    dispatch(removeFromCart(id));
+  };
 
   const checkoutHandler = () => {
-    if (userInfo === null  || typeof userInfo === 'undefined'){
-      navigate('/login?redirect=shipping')
-    }else if(userInfo !== null)  {
-      navigate('/signature')
+    if (userInfo === null || typeof userInfo === "undefined") {
+      navigate("/login?redirect=shipping");
+    } else if (userInfo !== null) {
+      navigate("/signature");
       // navigate('/shipping')
     }
-    
+
     // navigate('/login?redirect=shipping')
-  }
+  };
+  console.log(qty * 1000 * 24 * 60 * 60);
   return (
     <Row>
       <Col md={8}>
@@ -73,25 +72,20 @@ function CartScreen() {
                   <Col md={2}>${item.price}</Col>
 
                   <Col md={3}>
-                    <Form.Control
-                      as="select"
-                      value={item.qty}
-                      onChange={(e) => dispatch(addToCart(item.book, Number(e.target.value)))}
-                    >
-                      {[...Array(item.countInStock).keys()].map((x) => (
-                        <option key={x + 1} value={x + 1}>
-                          {x + 1}
-                        </option>
-                      ))}
-                    </Form.Control>
+                    <h5>
+                      {new Date(
+                        Date.now() + qty * 1000 * 24 * 60 * 60
+                      ).toLocaleDateString("be-BY")}
+                    </h5>
                   </Col>
 
                   <Col md={1}>
                     <Button
-                    type="button"
-                    variant='light'
-                    onClick={() => removeFromCartHandler(item.book)}>
-                        <i className='fas fa-trash'></i>
+                      type="button"
+                      variant="light"
+                      onClick={() => removeFromCartHandler(item.book)}
+                    >
+                      <i className="fas fa-trash"></i>
                     </Button>
                   </Col>
                 </Row>
@@ -103,25 +97,27 @@ function CartScreen() {
 
       <Col md={4}>
         <Card>
-            <ListGroup variant='flush'>
-                <ListGroup.Item>
-                    <h2>Subtotal ({cartItems.reduce((acc, item)=> acc + item.qty, 0)}) items</h2>
-                    ${cartItems.reduce((acc, item)=> acc + item.qty * item.price, 0).toFixed(2)}
-                </ListGroup.Item>
+          <ListGroup variant="flush">
+            <ListGroup.Item>
+              <h2>Items in cart: {cartItems.length}</h2>$
+              {cartItems
+                .reduce((acc, item) => acc + item.qty * item.price, 0)
+                .toFixed(2)}
+            </ListGroup.Item>
 
-                <ListGroup.Item>
-                    <div className="d-grid gap-2">
-                    <Button
-                      onClick={checkoutHandler}
-                      className="btn btn-primary"
-                      type="button"
-                      disabled={cartItems.length === 0}
-                    >
-                    Proceed to Checkout
-                    </Button>
-                  </div>
-                </ListGroup.Item>
-            </ListGroup>
+            <ListGroup.Item>
+              <div className="d-grid gap-2">
+                <Button
+                  onClick={checkoutHandler}
+                  className="btn btn-primary"
+                  type="button"
+                  disabled={cartItems.length === 0}
+                >
+                  Proceed to Checkout
+                </Button>
+              </div>
+            </ListGroup.Item>
+          </ListGroup>
         </Card>
       </Col>
     </Row>

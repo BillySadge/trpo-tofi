@@ -16,9 +16,11 @@ import Message from "../components/Message";
 import { listBookDetails, createBookReview } from "../actions/bookActions";
 import { BOOK_CREATE_REVIEW_RESET } from "../constants/bookConstants";
 import { useNavigate } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 function BookScreen() {
-  const [qty, setQty] = useState(1);
+  const [dateTo, setDateTo] = useState(new Date());
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
 
@@ -40,27 +42,29 @@ function BookScreen() {
   } = bookReviewCreate;
 
   useEffect(() => {
-    dispatch({type: BOOK_CREATE_REVIEW_RESET})
+    dispatch({ type: BOOK_CREATE_REVIEW_RESET });
 
-    if(successBookReview){
-      setRating(0)
-      setComment('')
+    if (successBookReview) {
+      setRating(0);
+      setComment("");
     }
     dispatch(listBookDetails(id));
   }, [dispatch, id, successBookReview]);
 
   const addToCartHandler = () => {
-    navigate(`/cart/${id}?qty=${qty}`);
+    navigate(
+      `/cart/${id}?qty=${(dateTo - Date.now()) / (1000 * 60 * 60 * 24)}`
+    );
   };
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(createBookReview(
-      id, {
+    dispatch(
+      createBookReview(id, {
         rating,
-        comment 
-      }
-    ))
+        comment,
+      })
+    );
   };
 
   return (
@@ -125,19 +129,20 @@ function BookScreen() {
                   {book.countInStock > 0 && (
                     <ListGroup.Item>
                       <Row>
-                        <Col>Qty</Col>
+                        <Col>Rent to</Col>
                         <Col xs="auto" className="my-1">
-                          <Form.Control
-                            as="select"
-                            value={qty}
-                            onChange={(e) => setQty(e.target.value)}
-                          >
-                            {[...Array(book.countInStock).keys()].map((x) => (
-                              <option key={x + 1} value={x + 1}>
-                                {x + 1}
-                              </option>
-                            ))}
-                          </Form.Control>
+                          <DatePicker
+                            selected={dateTo}
+                            onChange={(date) => setDateTo(date)}
+                            minDate={Date.now()}
+                            style={{ width: "100%" }}
+                            // excludeDateIntervals={[
+                            //   {
+                            //     start: new Date(0),
+                            //     end: new Date.now(),
+                            //   },
+                            // ]}
+                          />
                         </Col>
                       </Row>
                     </ListGroup.Item>
@@ -176,15 +181,17 @@ function BookScreen() {
                     <p>{review.comment}</p>
                   </ListGroup.Item>
                 ))}
-                
+
                 <ListGroup.Item>
                   <h4>Write a review</h4>
 
-
                   {loadingBookReview && <Loader />}
-                  {successBookReview && <Message variant='success'>Review Submitted</Message>}
-                  {errorBookReview && <Message variant='danger'>{errorBookReview}</Message>}
-                  
+                  {successBookReview && (
+                    <Message variant="success">Review Submitted</Message>
+                  )}
+                  {errorBookReview && (
+                    <Message variant="danger">{errorBookReview}</Message>
+                  )}
 
                   {userInfo ? (
                     <Form onSubmit={submitHandler}>
@@ -215,10 +222,11 @@ function BookScreen() {
                       </Form.Group>
 
                       <Button
-                      className="my-3"
-                      disabled={loadingBookReview}
-                      type='submit'
-                      variant='primary'>
+                        className="my-3"
+                        disabled={loadingBookReview}
+                        type="submit"
+                        variant="primary"
+                      >
                         Submit
                       </Button>
                     </Form>
