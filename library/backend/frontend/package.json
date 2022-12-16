@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.21.4",
     "core-js": "^3.26.1",
+    "js-file-download": "^0.4.12",
     "loader-utils": "^3.2.1",
     "minimatch": "^3.0.5",
     "node-sass": "8.0",

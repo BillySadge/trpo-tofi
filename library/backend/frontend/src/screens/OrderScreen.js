@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { PayPalButton } from "react-paypal-button-v2";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
+import axios from 'axios'
 import {
   getOrderDetails,
   payOrder,
@@ -14,6 +15,10 @@ import {
   ORDER_PAY_RESET,
   ORDER_DELIVER_RESET,
 } from "../constants/orderConstants";
+
+
+const fileDownload = require('js-file-download');
+
 
 function OrderScreen() {
   const orderId = useParams();
@@ -75,7 +80,15 @@ function OrderScreen() {
         setSdkReady(true);
       }
     }
-  }, [dispatch, order, orderId.id, successPay, successDeliver,navigate, userInfo]);
+  }, [
+    dispatch,
+    order,
+    orderId.id,
+    successPay,
+    successDeliver,
+    navigate,
+    userInfo,
+  ]);
 
   const successPaymentHandler = (paymentResult) => {
     console.log(orderId.id);
@@ -84,6 +97,27 @@ function OrderScreen() {
 
   const deliverHandler = () => {
     dispatch(deliverOrder(order));
+  };
+
+  const handlePDFDownload = (order) => {
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    axios
+      .get(`/api/orders/${order._id}/deliver`, {
+        responseType: "blob",
+        ...config
+      })
+      .then((res) => {
+        fileDownload(res.data, "filename.pdf");
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return loading ? (
@@ -203,10 +237,10 @@ function OrderScreen() {
 
               {!order.isPaid && (
                 <ListGroup.Item>
-                  {loadingPay && <Loader size={24}/>}
+                  {loadingPay && <Loader size={24} />}
 
                   {!sdkReady ? (
-                    <Loader size={24}/>
+                    <Loader size={24} />
                   ) : (
                     <PayPalButton
                       amount={order.totalPrice}
@@ -226,7 +260,8 @@ function OrderScreen() {
                     <Button
                       type="button"
                       className="btn btn-block my-3"
-                      onClick={deliverHandler}
+                      onClick={() => handlePDFDownload(order)}
+                      // onClick={deliverHandler}
                     >
                       Mark As Deliver
                     </Button>
