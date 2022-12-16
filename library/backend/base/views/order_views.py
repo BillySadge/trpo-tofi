@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from io import BytesIO
 from PIL import Image
+from django.core.files import File
+from django.http import HttpResponse
 import requests
 import re
 import base64
@@ -148,7 +150,7 @@ def updateOrderToPaid(request, pk):
 
 
     sign_pdf.load()
-    sign_pdf.sign_file(f'static/images/signatures/signature{sign._id}.png',str(sbook.book.uploadSrc),"ANDREI CHAPLINSKI", 280, 0, output_file=f'static/images/books/{sbook.book}{sbook._id}_signed.pdf')
+    sign_pdf.sign_file(f'static/images/signatures/signature{sign._id}.png',str(sbook.book.uploadSrc),"ANDREI CHAPLINSKI", 280, 0, output_file=f'static/images/books/{sbook.book}{sign._id}_signed.pdf')
     # sign_pdf.sign_file("static\images\signatures\signature1.png",str(sbook.book.uploadSrc),"ANDREI CHAPLINSKI", 280, 0)
     order.isPaid = True
     
@@ -160,17 +162,50 @@ def updateOrderToPaid(request, pk):
 
 
 
-@api_view(['PUT'])
-@permission_classes([IsAdminUser])
-def updateOrderToDelivered(request, pk):
-    sbook = SignatureBook.objects.get(order__id=pk)
-    # sbook.
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def downloadPDF(request, pk):
+
     order = Order.objects.get(_id=pk)
+    sign = Signature.objects.get(order__pk=pk)
+    sbook = SignatureBook.objects.get(signature_id=sign._id)
+    print(sign._id)
+    path_to_file = f'static/images/books/{sbook.book}{sign._id}_signed.pdf'
+    print(path_to_file)
+    f = open(path_to_file, 'rb')
+    pdfFile = File(f)
+    response = HttpResponse(pdfFile.read())
+    response['Content-Disposition'] = 'attachment'
+    return response
 
-    order.isDelivered = True
+    # sign = Signature.objects.get(order__pk=pk)
+    # # sbook = SignatureBook.objects.filter(sign__pk=pk)
+    # # sbook = SignatureBook.objects.get(sign_id=pk)
+    # path_to_file = 'static/images/books/'
+    # sbook = SignatureBook.objects.get(order__id=pk)
+    # print(sbook)
+    # sbook.
+    # order = Order.objects.get(_id=pk)
 
-    order.deliveredAt = datetime.now()
-    order.save()
+    # order.isDelivered = True
+
+    # order.deliveredAt = datetime.now()
+    # order.save()
 
     
-    return Response('Order was Delivered')
+    # return Response('Order was Delivered')
+
+# @api_view(['PUT'])
+# @permission_classes([IsAdminUser])
+# def updateOrderToDelivered(request, pk):
+#     sbook = SignatureBook.objects.get(order__id=pk)
+#     # sbook.
+#     order = Order.objects.get(_id=pk)
+
+#     order.isDelivered = True
+
+#     order.deliveredAt = datetime.now()
+#     order.save()
+
+    
+#     return Response('Order was Delivered')
