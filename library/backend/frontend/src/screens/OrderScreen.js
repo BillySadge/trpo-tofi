@@ -203,10 +203,10 @@ function OrderScreen() {
 
               {!order.isPaid && (
                 <ListGroup.Item>
-                  {loadingPay && <Loader />}
+                  {loadingPay && <Loader size={24}/>}
 
                   {!sdkReady ? (
-                    <Loader />
+                    <Loader size={24}/>
                   ) : (
                     <PayPalButton
                       amount={order.totalPrice}

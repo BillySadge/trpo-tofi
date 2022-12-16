@@ -40,10 +40,11 @@ function BookScreen() {
   } = bookReviewCreate;
 
   useEffect(() => {
+    dispatch({type: BOOK_CREATE_REVIEW_RESET})
+
     if(successBookReview){
       setRating(0)
       setComment('')
-      dispatch({type: BOOK_CREATE_REVIEW_RESET})
     }
     dispatch(listBookDetails(id));
   }, [dispatch, id, successBookReview]);

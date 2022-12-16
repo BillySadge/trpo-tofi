@@ -44,7 +44,8 @@ function CartScreen() {
     if (userInfo === null  || typeof userInfo === 'undefined'){
       navigate('/login?redirect=shipping')
     }else if(userInfo !== null)  {
-      navigate('/shipping')
+      navigate('/signature')
+      // navigate('/shipping')
     }
     
     // navigate('/login?redirect=shipping')

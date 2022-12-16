@@ -18,6 +18,7 @@ import UserEditScreen from "./screens/UserEditScreen";
 import BookListScreen from "./screens/BookListScreen";
 import OrderListScreen from "./screens/OrderListScreen";
 import BookEditScreen from "./screens/BookEditScreen";
+import SignatureScreen from './screens/SignatureScreen'
    
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
             <Route path="/register" element={<RegisterScreen />} />
             <Route path="/profile" element={<ProfileScreen />} />
             <Route path="/shipping" element={<ShippingScreen />} />
+            <Route path="/signature" element={<SignatureScreen />} />
             <Route path="/placeorder" element={<PlaceOrderScreen />} />
             <Route path="/order/:id" element={<OrderScreen />} />
             <Route path="/payment" element={<PaymentScreen />} />

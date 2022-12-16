@@ -4,7 +4,7 @@ import React from "react";
 import BookLoader from "./bookLoader/bookloader";
 // import PacmanLoader from "react-spinners/PacmanLoader";
 
-function Loader() {
+function Loader({size}) {
   return (
     // <Spinner
     // animation="border"
@@ -21,12 +21,13 @@ function Loader() {
     // <div>
     <>
     <BookLoader
+        size={size}
         background={"linear-gradient(135deg, #6066FA, #4645F6)"}
-        desktopSize={"100px"}
-        mobileSize={"60px"}
+        // desktopSize={"100px"}
+        // mobileSize={"60px"}
         textColor={"#4645F6"}
         className="ld-custom"
-        text={"Зачилься мэньчик..."}
+        text={"Wait a bit..."}
       />
     </>
     // <PacmanLoader

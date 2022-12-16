@@ -59,14 +59,22 @@ function PlaceOrderScreen() {
         <Col md={8}>
           <ListGroup variant="flush">
             <ListGroup.Item>
-              <h2>Shipping</h2>
+              <h2>Signature</h2>
 
+              <p>
+                <strong>Signature: </strong>
+                <img src={`${cart.signature.signatureImg}`} />
+                {/* {cart.signature?.signatureImg}, {cart.shippingAddress?.city}{" "}
+                {cart.shippingAddress?.postalCode},{" "}
+                {cart.shippingAddress?.country} */}
+              </p>
+{/* 
               <p>
                 <strong>Shipping: </strong>
                 {cart.shippingAddress?.address}, {cart.shippingAddress?.city}{" "}
                 {cart.shippingAddress?.postalCode},{" "}
                 {cart.shippingAddress?.country}
-              </p>
+              </p> */}
             </ListGroup.Item>
             <ListGroup.Item>
               <h2>Payment Method</h2>

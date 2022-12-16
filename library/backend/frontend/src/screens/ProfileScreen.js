@@ -75,7 +75,7 @@ function ProfileScreen() {
         {error && <Message variant="danger">{error}</Message>}
         {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
         
-        {loading && <Loader />}
+        {loading && <Loader size={32}/>}
         <Form onSubmit={submitHandler}>
           <Form.Group controlId="name">
             <Form.Label>Name</Form.Label>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Button, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import FormContainer from "../components/FormContainer";
@@ -8,20 +8,31 @@ import { useNavigate } from "react-router-dom";
 
 function PaymentScreen() {
   const cart = useSelector((state) => state.cart);
-  const { shippingAddress } = cart;
-
+  const { shippingAddress, signature } = cart;
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [paymentMethod, setPaymentMethod] = useState("PayPal");
-  if (!shippingAddress.address) {
-    navigate("/shipping");
-  }
-
+  // if (!signature.signatureImg || signature.signatureImg === "") {
+  //   navigate("/signature");
+  // }
+  // if (!shippingAddress.address) {
+  //   navigate("/shipping");
+  // }
+  useEffect(() => {
+    if (!signature.signatureImg || signature.signatureImg === "") {
+      navigate("/signature");
+    }
+  },[signature.signatureImg])
   const submitHandler = (e) => {
-    e.preventDefault();
-    dispatch(savePaymentMethod(paymentMethod));
-    navigate("/placeorder");  
+    // if(signature.signatureImg && signature.signatureImg != ""){
+      console.log(signature.signatureImg)
+      e.preventDefault();
+      dispatch(savePaymentMethod(paymentMethod));
+      console.log(signature.signatureImg)
+      navigate("/placeorder"); 
+    // } 
   };
   return (
     <FormContainer>

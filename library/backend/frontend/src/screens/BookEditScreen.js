@@ -17,6 +17,7 @@ function BookEditScreen() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState("");
+  const [bookSrc, setBookSrc] = useState("");
   const [brand, setBrand] = useState("");
   const [category, setCategory] = useState("");
   const [countInStock, setCountInStock] = useState(0);
@@ -44,6 +45,7 @@ function BookEditScreen() {
             setName(book.name);
             setPrice(book.price);
             setImage(book.image);
+            setBookSrc(book.uploadSrc);
             setBrand(book.brand);
             setCategory(book.category);
             setCountInStock(book.countInStock);
@@ -64,6 +66,7 @@ function BookEditScreen() {
         name,
         price,
         image,
+        bookSrc,
         brand,
         category,
         countInStock,
@@ -75,7 +78,7 @@ function BookEditScreen() {
   };
 
 
-  const uploadFileHandler = async (e) => {
+  const uploadImageHandler = async (e) => {
    const file = e.target.files[0]
    const formData = new FormData()
    formData.append('image', file)
@@ -90,8 +93,32 @@ function BookEditScreen() {
       }
     }
 
-    const {data} = await axios.post('/api/books/upload/', formData, config)
+    const {data} = await axios.post('/api/books/upload/image/', formData, config)
     setImage(data)
+    // console.log(data)
+    setUploading(false)
+   }catch(error){
+    setUploading(false)
+   }
+  }
+  const uploadFileHandler = async (e) => {
+   const file = e.target.files[0]
+   const formData = new FormData()
+   formData.append('bookSrc', file)
+   formData.append('book_id', bookId.id)
+
+   setUploading(true)
+
+   try{
+    const config = {
+      headers:{
+        'Content-Type':'multipart/form-data'
+      }
+    }
+
+    const {data} = await axios.post('/api/books/upload/file/', formData, config)
+    setBookSrc(data)
+    // console.log(data)
     setUploading(false)
    }catch(error){
     setUploading(false)
@@ -142,12 +169,26 @@ function BookEditScreen() {
               <Form.Control
                 type="file"
                 placeholder="Choose file"
-                onChange={uploadFileHandler}
+                onChange={uploadImageHandler}
               ></Form.Control>
 
               {/* <Form.File id='image-file' label='Choose file' custom onChange={uploadFileHandler}>
               </Form.File> */}
              {uploading && <Loader />}
+            </Form.Group>
+            <Form.Group controlId="booksrc">
+              <Form.Label>Book File</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="upload book file"
+                value={bookSrc}
+                onChange={(e) => setBookSrc(e.target.value)}
+              ></Form.Control>
+              <Form.Control
+                type="file"
+                placeholder="Choose file"
+                onChange={uploadFileHandler}
+              ></Form.Control>
             </Form.Group>
             <Form.Group controlId="brand">
               <Form.Label>Brand</Form.Label>
