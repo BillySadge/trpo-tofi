@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap";
+import { Row, Col, ListGroup,Image, Card, Button } from "react-bootstrap";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { PayPalButton } from "react-paypal-button-v2";
@@ -95,9 +95,9 @@ function OrderScreen() {
     dispatch(payOrder(orderId.id, paymentResult));
   };
 
-  const deliverHandler = () => {
-    dispatch(deliverOrder(order));
-  };
+  // const deliverHandler = () => {
+  //   dispatch(deliverOrder(order));
+  // };
 
   const handlePDFDownload = (order) => {
     const config = {
@@ -119,7 +119,8 @@ function OrderScreen() {
         console.log(err);
       });
   };
-
+  // let image = new Image();
+  // image.src = `data:image/png;base64,${order.signature.image}`
   return loading ? (
     <Loader />
   ) : error ? (
@@ -131,7 +132,7 @@ function OrderScreen() {
         <Col md={8}>
           <ListGroup variant="flush">
             <ListGroup.Item>
-              <h2>Shipping</h2>
+              <h2>Signature</h2>
               <p>
                 <strong>Name: </strong> {order.user.name}{" "}
               </p>
@@ -141,10 +142,14 @@ function OrderScreen() {
               </p>
 
               <p>
-                <strong>Shipping: </strong>
-                {order.shippingAddress?.address}, {order.shippingAddress?.city}{" "}
+                <strong>Signature: </strong>
+                {/* {order.signature?.image} */}
+                <img src={`static/images/signatures/signature${order.signature._id}.png`} />
+                {/* <img src={image ? image: ""} alt="signature image" /> */}
+                {/* <img src={image ? image: ""} alt="signature image" /> */}
+                {/* {order.shippingAddress?.address}, {order.shippingAddress?.city}{" "}
                 {order.shippingAddress?.postalCode},{" "}
-                {order.shippingAddress?.country}
+                {order.shippingAddress?.country} */}
               </p>
 
               {order.isDelivered ? (
@@ -252,9 +257,8 @@ function OrderScreen() {
             </ListGroup>
             {loadingDeliver && <Loader />}
             {userInfo &&
-              userInfo.isAdmin &&
               order.isPaid &&
-              !order.isDelivered && (
+              (
                 <ListGroup.Item>
                   <div className="d-grid gap-2">
                     <Button
@@ -263,7 +267,7 @@ function OrderScreen() {
                       onClick={() => handlePDFDownload(order)}
                       // onClick={deliverHandler}
                     >
-                      Mark As Deliver
+                      Download
                     </Button>
                   </div>
                 </ListGroup.Item>

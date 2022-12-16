@@ -79,6 +79,7 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
       },
     };
     const axios = require("axios").default;
+    
     const { data } = await axios.get(`/api/orders/${id}/`, config);
 
     dispatch({

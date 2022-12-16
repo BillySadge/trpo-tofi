@@ -174,9 +174,9 @@ function SignatureScreen() {
     var image = document.getElementById("canvasimg");
     // var dataURL = image.toDataURL("image/png");
 
-    console.log(image);
+    // console.log(image);
     setSignatureImg(image.src);
-    console.log(signatureImg);
+    // console.log(signatureImg);
     dispatch(saveSignature({ signatureImg }, name.current.value));
     navigate("/payment");
   };

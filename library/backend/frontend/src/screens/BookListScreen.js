@@ -82,7 +82,7 @@ function BookListScreen() {
                 <th>NAME</th>
                 <th>PRICE</th>
                 <th>CATEGORY</th>
-                <th>BRAND</th>
+                <th>AUTHOR</th>
                 <th></th>
                 </tr>
             </thead>
@@ -94,7 +94,7 @@ function BookListScreen() {
                         <td>{book.name}</td>
                         <td>${book.price}</td>
                         <td>{book.category}</td>
-                        <td>{book.brand}</td>
+                        <td>{book.author}</td>
 
                         <td>
                             <LinkContainer to={`/admin/book/${book._id}/edit`}>

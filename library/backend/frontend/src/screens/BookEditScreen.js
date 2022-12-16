@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios'
+import axios from "axios";
 import { Link } from "react-router-dom";
-import { Form, Button} from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import FormContainer from "../components/FormContainer";
 import { useNavigate, useParams } from "react-router-dom";
 import { listBookDetails, updateBook } from "../actions/bookActions";
-import { BOOK_UPDATE_RESET } from '../constants/bookConstants'
-
+import { BOOK_UPDATE_RESET } from "../constants/bookConstants";
+import { deleteBook } from '../actions/bookActions'
 
 function BookEditScreen() {
   const bookId = useParams();
@@ -18,7 +18,7 @@ function BookEditScreen() {
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState("");
   const [bookSrc, setBookSrc] = useState("");
-  const [brand, setBrand] = useState("");
+  const [author, setAuthor] = useState("");
   const [category, setCategory] = useState("");
   const [countInStock, setCountInStock] = useState(0);
   const [description, setDescription] = useState("");
@@ -30,107 +30,121 @@ function BookEditScreen() {
   const bookDetails = useSelector((state) => state.bookDetails);
   const { error, loading, book } = bookDetails;
   const bookUpdate = useSelector((state) => state.bookUpdate);
-  const { error:errorUpdate, loading:loadingUpdate, success: successUpdate } = bookUpdate;
+  const {
+    error: errorUpdate,
+    loading: loadingUpdate,
+    success: successUpdate,
+  } = bookUpdate;
 
   useEffect(() => {
-
-    if(successUpdate){
-        dispatch({type: BOOK_UPDATE_RESET})
-        navigate('/admin/booklist')
-
-    }else{
-        if (!book.name || book._id !== Number(bookId.id)) {
-            dispatch(listBookDetails(bookId.id));
-          } else {
-            setName(book.name);
-            setPrice(book.price);
-            setImage(book.image);
-            setBookSrc(book.uploadSrc);
-            setBrand(book.brand);
-            setCategory(book.category);
-            setCountInStock(book.countInStock);
-            setDescription(book.description);
-          }
+    if (successUpdate) {
+      dispatch({ type: BOOK_UPDATE_RESET });
+      navigate("/admin/booklist");
+    } else {
+      if (!book.name || book._id !== Number(bookId.id)) {
+        dispatch(listBookDetails(bookId.id));
+      } else {
+        setName(book.name);
+        setPrice(book.price);
+        setImage(book.image);
+        setBookSrc(book.uploadSrc);
+        setAuthor(book.author);
+        setCategory(book.category);
+        setCountInStock(book.countInStock);
+        setDescription(book.description);
+      }
     }
-
-
-    
-  }, [dispatch, book, book._id,bookId.id, navigate, successUpdate]);
+  }, [dispatch, book, book._id, bookId.id, navigate, successUpdate]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-
-    // update book
-    dispatch(updateBook({
-        _id:bookId.id,
-        name,
-        price,
-        image,
-        bookSrc,
-        brand,
-        category,
-        countInStock,
-        description
-
-    }
-
-    ))
+      // update book
+      dispatch(
+        updateBook({
+          _id: bookId.id,
+          name,
+          price,
+          image,
+          bookSrc,
+          author,
+          category,
+          countInStock,
+          description,
+        })
+      );
+    
   };
 
-
   const uploadImageHandler = async (e) => {
-   const file = e.target.files[0]
-   const formData = new FormData()
-   formData.append('image', file)
-   formData.append('book_id', bookId.id)
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append("image", file);
+    formData.append("book_id", bookId.id);
 
-   setUploading(true)
+    setUploading(true);
 
-   try{
-    const config = {
-      headers:{
-        'Content-Type':'multipart/form-data'
-      }
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      const { data } = await axios.post(
+        "/api/books/upload/image/",
+        formData,
+        config
+      );
+      setImage(data);
+      // console.log(data)
+      setUploading(false);
+    } catch (error) {
+      setUploading(false);
     }
-
-    const {data} = await axios.post('/api/books/upload/image/', formData, config)
-    setImage(data)
-    // console.log(data)
-    setUploading(false)
-   }catch(error){
-    setUploading(false)
-   }
-  }
+  };
   const uploadFileHandler = async (e) => {
-   const file = e.target.files[0]
-   const formData = new FormData()
-   formData.append('bookSrc', file)
-   formData.append('book_id', bookId.id)
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append("bookSrc", file);
+    formData.append("book_id", bookId.id);
 
-   setUploading(true)
+    setUploading(true);
 
-   try{
-    const config = {
-      headers:{
-        'Content-Type':'multipart/form-data'
-      }
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      };
+
+      const { data } = await axios.post(
+        "/api/books/upload/file/",
+        formData,
+        config
+      );
+      setBookSrc(data);
+      // console.log(data)
+      setUploading(false);
+    } catch (error) {
+      setUploading(false);
     }
+  };
 
-    const {data} = await axios.post('/api/books/upload/file/', formData, config)
-    setBookSrc(data)
-    // console.log(data)
-    setUploading(false)
-   }catch(error){
-    setUploading(false)
-   }
+  const deleteHandler = (id) => {
+    // console.log(id)
+    if(window.confirm('Are you sure you want to continue update this book?')){
+        // dispatch(deleteBook(id))
+      //
+    }else{
+      dispatch(updateBook(id))
+    }
   }
-
   return (
     <div>
-      <Link to="/admin/booklist">Go Back</Link>
+      <Link to="/admin/booklist" onClick={() => deleteHandler(book._id)}>Go Back</Link>
       <FormContainer>
-        {loadingUpdate && <Loader /> }
-        {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
+        {loadingUpdate && <Loader />}
+        {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
         <h1>Edit Book</h1>
         {loading ? (
           <Loader />
@@ -154,6 +168,7 @@ function BookEditScreen() {
                 placeholder="Enter price"
                 value={price}
                 min="0"
+                max="10000"
                 step=".01"
                 onChange={(e) => setPrice(e.target.value)}
               ></Form.Control>
@@ -174,7 +189,7 @@ function BookEditScreen() {
 
               {/* <Form.File id='image-file' label='Choose file' custom onChange={uploadFileHandler}>
               </Form.File> */}
-             {uploading && <Loader />}
+              {uploading && <Loader />}
             </Form.Group>
             <Form.Group controlId="booksrc">
               <Form.Label>Book File</Form.Label>
@@ -186,28 +201,26 @@ function BookEditScreen() {
               ></Form.Control>
               <Form.Control
                 type="file"
-                placeholder="Choose file"
+                placeholder="Choose file" 
                 onChange={uploadFileHandler}
               ></Form.Control>
             </Form.Group>
-            <Form.Group controlId="brand">
-              <Form.Label>Brand</Form.Label>
+            <Form.Group controlId="author">
+              <Form.Label>Author</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter brand "
-                value={brand}
-                onChange={(e) => setBrand(e.target.value)}
+                placeholder="Enter author "
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
               ></Form.Control>
             </Form.Group>
             <Form.Group controlId="countinstock">
               <Form.Label>Stock</Form.Label>
               <Form.Control
-                
                 type="number"
                 placeholder="Enter stock"
                 value={countInStock}
                 min="1"
-                
                 onChange={(e) => setCountInStock(e.target.value)}
               ></Form.Control>
             </Form.Group>
@@ -229,10 +242,6 @@ function BookEditScreen() {
                 onChange={(e) => setDescription(e.target.value)}
               ></Form.Control>
             </Form.Group>
-
-            
-
-            
 
             <Button className="my-3 " type="submit" variant="primary">
               Update
