@@ -118,6 +118,7 @@ function SignatureScreen() {
     document.getElementById("canvasimg").style.display = "none";
     }
   }
+  
   function save() {
     canvas = document.getElementById("can");
     document.getElementById("canvasimg").style.border = "2px solid";

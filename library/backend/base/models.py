@@ -101,6 +101,7 @@ class Signature(models.Model):
 
 class SignatureBook(models.Model):
     book = models.ForeignKey(Book, on_delete=models.SET_NULL, null=True)
+    bookSrc = models.FileField(upload_to='books/%Y/%m/%d/', blank=True)
     signature = models.ForeignKey(Signature,on_delete=models.SET_NULL, null=True)
     _id = models.AutoField(primary_key=True, editable=False)
 

@@ -60,7 +60,7 @@ def load():
 
 
 
-def sign_file(input_file: str, signatureID: str, x_coordinate: int, 
+def sign_file(sign_img: str, input_file: str, signatureID: str, x_coordinate: int, 
             y_coordinate: int, pages: Tuple = None, output_file: str = None
               ):
     input_file = 'static/images/' + input_file
@@ -96,7 +96,8 @@ def sign_file(input_file: str, signatureID: str, x_coordinate: int,
                 continue
         pg = doc.GetPage(page)
         pg.AnnotPushBack(sigField)
-    sign_filename = "static\images\signatures\signature1.png"
+    sign_filename = sign_img
+    # sign_filename = "static\images\signatures\signature1.png"
     # sign_filename = "static\images\signatures\signature.jpg"
     pk_filename = "static\images\signatures\container.pfx"
     approval_field = doc.GetField(signatureID)

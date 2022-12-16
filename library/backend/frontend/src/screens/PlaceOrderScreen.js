@@ -43,6 +43,7 @@ function PlaceOrderScreen() {
   const placeorder = () => {
     dispatch(createOrder({
       orderItems: cart.cartItems,
+      signature: cart.signature,
       shippingAddress: cart.shippingAddress,
       paymentMethod: cart.paymentMethod,
       itemsPrice:cart.itemsPrice,

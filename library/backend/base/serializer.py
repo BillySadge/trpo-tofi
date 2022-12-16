@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
-from .models import Book, Order, OrderItem, ShippingAddress, Review, Signature
+from .models import Book, Order, OrderItem, ShippingAddress, Review, Signature, SignatureBook
 
 
 
@@ -70,9 +70,15 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class SignutureSerializer(serializers.ModelSerializer):
+class SignatureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Signature
+        fields = '__all__'
+
+
+class SignatureBookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SignatureBook
         fields = '__all__'
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -112,11 +118,20 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def get_signiture(self, obj):
         try:
-            signature = SignutureSerializer(obj.signiture, many=False).data
+            signature = SignatureSerializer(obj.signature, many=False).data
         except:
             signature = False
         
         return signature
+
+
+    def get_signitureBook(self, obj):
+        try:
+            signatureBook = SignatureBookSerializer(obj.signatureBook, many=False).data
+        except:
+            signatureBook = False
+        
+        return signatureBook
 
 
 
