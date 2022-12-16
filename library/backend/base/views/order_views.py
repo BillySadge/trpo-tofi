@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
-from base.models import Book, Order, OrderItem, ShippingAddress
+from base.models import Book, Order, OrderItem, ShippingAddress, Signature
 from base.serializer import BookSerializer, OrderSerializer
 
 from rest_framework import status
@@ -36,6 +36,11 @@ def addOrderItems(request):
             country=data['shippingAddress']['country'],
         )
 
+
+        signature = Signature.objects.create(
+            order = order,
+            
+        )
 
         for i in orderItems:
             book = Book.objects.get(_id=i['book'])

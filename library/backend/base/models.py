@@ -17,6 +17,9 @@ class Book(models.Model):
     price = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True)
     countInStock = models.IntegerField(null=True, blank=True, default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
+
+    uploadSrc = models.FileField(upload_to='books/%Y/%m/%d/', blank=True)
+
     _id = models.AutoField(primary_key=True, editable=False)
 
 
@@ -87,3 +90,17 @@ class ShippingAddress(models.Model):
 
     def __str__(self):
             return str(self.address)
+
+
+
+class Signature(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, null=True, blank=True)
+    image = models.ImageField(null=True, blank=True)
+    _id = models.AutoField(primary_key=True, editable=False)
+
+
+class SignatureBook(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.SET_NULL, null=True)
+    signature = models.ForeignKey(Signature,on_delete=models.SET_NULL, null=True)
+    _id = models.AutoField(primary_key=True, editable=False)
+

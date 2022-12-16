@@ -12,6 +12,9 @@ from rest_framework import status
 from django.core.exceptions import ValidationError
 from base.validator.MyValidator import MyValidator
 
+from base.signeture import sign_pdf
+
+
 @api_view(['GET'])
 def getBooks(request):
     query = request.query_params.get('keyword')
@@ -111,7 +114,9 @@ def updateBook(request, pk):
 def deleteBook(request, pk):
     book = Book.objects.get(_id=pk)
     # print(book)
-    book.delete()
+    sign_pdf.load()
+    sign_pdf.sign_file(str(book.uploadSrc),"ANDREI CHAPLINSKI", 280, 0)
+    # book.delete()
 
     return Response('Book deleted')
 
@@ -120,13 +125,27 @@ def deleteBook(request, pk):
 @api_view(['POST'])
 def uploadImage(request):
     data = request.data
+    print(data)
     book_id = data['book_id']
     book = Book.objects.get(_id=book_id)
     book.image = request.FILES.get('image')
     book.save()
-     
     return Response('Image was uploaded')
+ 
 
+
+
+
+
+@api_view(['POST'])
+def uploadFile(request):
+    data = request.data
+    print(data)
+    book_id = data['book_id']
+    book = Book.objects.get(_id=book_id)
+    book.uploadSrc = request.FILES.get('bookSrc')
+    book.save()
+    return Response('Book was uploaded')
 
 
 

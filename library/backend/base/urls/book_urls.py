@@ -5,7 +5,8 @@ urlpatterns = [
 
     path('', views.getBooks, name="books"),
     path('create/', views.createBook, name="book-create"),
-    path('upload/', views.uploadImage, name="image-upload"),
+    path('upload/image/', views.uploadImage, name="image-upload"),
+    path('upload/file/', views.uploadFile, name="file-upload"),
 
     path('<str:pk>/reviews/', views.createBookReview, name="create-review"),
     path('top/', views.getTopBooks, name='top-books'),
