@@ -52,7 +52,9 @@ function BookScreen() {
 
   const addToCartHandler = () => {
     navigate(
-      `/cart/${id}?qty=${(dateTo - Date.now()) / (1000 * 60 * 60 * 24)}`
+      `/cart/${id}?qty=${Math.round(
+        (dateTo - Date.now()) / (1000 * 60 * 60 * 24)
+      )}`
     );
   };
 

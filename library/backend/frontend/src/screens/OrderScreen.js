@@ -99,6 +99,7 @@ function OrderScreen() {
 
   const handlePDFDownload = (order) => {
     order.orderItems.forEach((orderItem) => {
+      console.log(orderItem);
       const config = {
         headers: {
           "Content-type": "application/json",
@@ -106,7 +107,7 @@ function OrderScreen() {
         },
       };
       axios
-        .get(`/api/orders/${orderItem._id}/deliver`, {
+        .get(`/api/orders/${orderItem.order}/deliver`, {
           responseType: "blob",
           ...config,
         })

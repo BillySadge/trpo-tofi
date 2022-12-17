@@ -132,13 +132,18 @@ function BookEditScreen() {
   const deleteHandler = (id) => {
     // console.log(id)
     if (!uploadSrc) {
-      window.confirm("Book will be deleted if you are not specified file");
+      const m = window.confirm(
+        "Book will be deleted if you are not specified file"
+      );
+      if (m) {
+        dispatch(deleteBook(id));
+      }
     }
     // if (window.confirm("Are you sure you want to continue update this book?")) {
     //   // dispatch(deleteBook(id))
     //   //
     else {
-      dispatch(updateBook(book));
+      //dispatch(updateBook(book));
     }
   };
   return (

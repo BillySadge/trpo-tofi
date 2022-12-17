@@ -18,8 +18,7 @@ import UserEditScreen from "./screens/UserEditScreen";
 import BookListScreen from "./screens/BookListScreen";
 import OrderListScreen from "./screens/OrderListScreen";
 import BookEditScreen from "./screens/BookEditScreen";
-import SignatureScreen from './screens/SignatureScreen'
-   
+import SignatureScreen from "./screens/SignatureScreen";
 
 function App() {
   return (
@@ -41,18 +40,16 @@ function App() {
             {/* TODO FIND THE SOLUTION TO REPLACE WILD CARD WITHOUT DOUBLE RENDERING */}
             {/* <Route path="/cart/*" element={<CartScreen />} /> */}
             {/* <Route path='/cart/:id?' element={<CartScreen />} /> */}
-            <Route path='/cart/:id' element={<CartScreen />} />
-            <Route path='/cart' element={<CartScreen />} />
+            <Route path="/cart/:id" element={<CartScreen />} />
+            <Route path="/cart" element={<CartScreen />} />
 
             <Route path="/admin/userlist" element={<UserListScreen />} />
             <Route path="/admin/user/:id/edit" element={<UserEditScreen />} />
-
 
             <Route path="/admin/booklist" element={<BookListScreen />} />
             <Route path="/admin/book/:id/edit" element={<BookEditScreen />} />
 
             <Route path="/admin/orderlist" element={<OrderListScreen />} />
-
           </Routes>
         </Container>
       </main>
