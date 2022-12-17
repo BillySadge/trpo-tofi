@@ -9,7 +9,7 @@ import FormContainer from "../components/FormContainer";
 import { useNavigate, useParams } from "react-router-dom";
 import { listBookDetails, updateBook } from "../actions/bookActions";
 import { BOOK_UPDATE_RESET } from "../constants/bookConstants";
-import { deleteBook } from '../actions/bookActions'
+import { deleteBook } from "../actions/bookActions";
 
 function BookEditScreen() {
   const bookId = useParams();
@@ -17,7 +17,7 @@ function BookEditScreen() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState(0);
   const [image, setImage] = useState("");
-  const [bookSrc, setBookSrc] = useState("");
+  const [uploadSrc, setBookSrc] = useState("");
   const [author, setAuthor] = useState("");
   const [category, setCategory] = useState("");
   const [countInStock, setCountInStock] = useState(0);
@@ -58,21 +58,20 @@ function BookEditScreen() {
 
   const submitHandler = (e) => {
     e.preventDefault();
-      // update book
-      dispatch(
-        updateBook({
-          _id: bookId.id,
-          name,
-          price,
-          image,
-          bookSrc,
-          author,
-          category,
-          countInStock,
-          description,
-        })
-      );
-    
+    // update book
+    dispatch(
+      updateBook({
+        _id: bookId.id,
+        name,
+        price,
+        image,
+        uploadSrc,
+        author,
+        category,
+        countInStock,
+        description,
+      })
+    );
   };
 
   const uploadImageHandler = async (e) => {
@@ -105,7 +104,7 @@ function BookEditScreen() {
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0];
     const formData = new FormData();
-    formData.append("bookSrc", file);
+    formData.append("uploadSrc", file);
     formData.append("book_id", bookId.id);
 
     setUploading(true);
@@ -132,16 +131,21 @@ function BookEditScreen() {
 
   const deleteHandler = (id) => {
     // console.log(id)
-    if(window.confirm('Are you sure you want to continue update this book?')){
-        // dispatch(deleteBook(id))
-      //
-    }else{
-      dispatch(updateBook(id))
+    if (!uploadSrc) {
+      window.confirm("Book will be deleted if you are not specified file");
     }
-  }
+    // if (window.confirm("Are you sure you want to continue update this book?")) {
+    //   // dispatch(deleteBook(id))
+    //   //
+    else {
+      dispatch(updateBook(book));
+    }
+  };
   return (
     <div>
-      <Link to="/admin/booklist" onClick={() => deleteHandler(book._id)}>Go Back</Link>
+      <Link to="/admin/booklist" onClick={() => deleteHandler(book._id)}>
+        Go Back
+      </Link>
       <FormContainer>
         {loadingUpdate && <Loader />}
         {errorUpdate && <Message variant="danger">{errorUpdate}</Message>}
@@ -184,6 +188,7 @@ function BookEditScreen() {
               <Form.Control
                 type="file"
                 placeholder="Choose file"
+                accept=".png,.jpg,.jpeg,.webp"
                 onChange={uploadImageHandler}
               ></Form.Control>
 
@@ -196,12 +201,13 @@ function BookEditScreen() {
               <Form.Control
                 type="text"
                 placeholder="upload book file"
-                value={bookSrc}
+                value={uploadSrc}
                 onChange={(e) => setBookSrc(e.target.value)}
               ></Form.Control>
               <Form.Control
                 type="file"
-                placeholder="Choose file" 
+                placeholder="Choose file"
+                accept=".pdf"
                 onChange={uploadFileHandler}
               ></Form.Control>
             </Form.Group>

@@ -14,6 +14,7 @@ function SignatureScreen() {
   const [isActive, setIsActive] = useState(false);
   const name = useRef();
   const [isName, setIsName] = useState(false);
+  const [isSign, setIsSign] = useState(false);
 
   const cart = useSelector((state) => state.cart);
   const { signature } = cart;
@@ -23,15 +24,18 @@ function SignatureScreen() {
   const dispatch = useDispatch();
 
   const checkInput = () => {
-    if (name.current.value !== "") {
+    if (name.current.value.length !== 0) {
       setIsName(true);
+    } else {
+      setIsName(false);
     }
   };
 
   useEffect(() => {
     init();
+    document.getElementById("canvasimg").style.display = "none";
   }, []);
-  var canvas,
+  let canvas,
     ctx,
     flag = false,
     prevX = 0,
@@ -68,6 +72,7 @@ function SignatureScreen() {
       "mouseup",
       function (e) {
         findxy("up", e);
+        setIsSign(true);
       },
       false
     );
@@ -122,12 +127,15 @@ function SignatureScreen() {
   }
   function erase() {
     var m = window.confirm("Want to clear");
+    canvas = document.getElementById("can");
+    ctx = canvas.getContext("2d");
     if (m) {
-      ctx.clearRect(0, 0, w, h);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      setIsSign(false);
       document.getElementById("canvasimg").style.display = "none";
     }
   }
-  
+
   function save() {
     canvas = document.getElementById("can");
     document.getElementById("canvasimg").style.border = "2px solid";
@@ -271,7 +279,7 @@ function SignatureScreen() {
           </div>
 
           <div className="man-buttons">
-            {isName ? (
+            {isName && isSign ? (
               <Button
                 className="btn-cntrl"
                 type="button"

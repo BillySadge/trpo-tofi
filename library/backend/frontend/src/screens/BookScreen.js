@@ -20,7 +20,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 function BookScreen() {
-  const [dateTo, setDateTo] = useState(new Date());
+  const [dateTo, setDateTo] = useState(Date.now() + 1000 * 24 * 60 * 60);
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
 
@@ -30,7 +30,6 @@ function BookScreen() {
   const dispatch = useDispatch();
   const bookDetails = useSelector((state) => state.bookDetails);
   const { loading, error, book } = bookDetails;
-  console.log(book);
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
@@ -134,7 +133,7 @@ function BookScreen() {
                           <DatePicker
                             selected={dateTo}
                             onChange={(date) => setDateTo(date)}
-                            minDate={Date.now()}
+                            minDate={Date.now() + 1000 * 24 * 60 * 60}
                             style={{ width: "100%" }}
                             // excludeDateIntervals={[
                             //   {

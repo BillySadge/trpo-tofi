@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, ListGroup,Image, Card, Button } from "react-bootstrap";
+import { Row, Col, ListGroup, Image, Card, Button } from "react-bootstrap";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { PayPalButton } from "react-paypal-button-v2";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
-import axios from 'axios'
+import axios from "axios";
 import {
   getOrderDetails,
   payOrder,
@@ -16,9 +16,7 @@ import {
   ORDER_DELIVER_RESET,
 } from "../constants/orderConstants";
 
-
-const fileDownload = require('js-file-download');
-
+const fileDownload = require("js-file-download");
 
 function OrderScreen() {
   const orderId = useParams();
@@ -100,24 +98,26 @@ function OrderScreen() {
   // };
 
   const handlePDFDownload = (order) => {
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
-    axios
-      .get(`/api/orders/${order._id}/deliver`, {
-        responseType: "blob",
-        ...config
-      })
-      .then((res) => {
-        fileDownload(res.data, "filename.pdf");
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    order.orderItems.forEach((orderItem) => {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      axios
+        .get(`/api/orders/${orderItem._id}/deliver`, {
+          responseType: "blob",
+          ...config,
+        })
+        .then((res) => {
+          fileDownload(res.data, "filename.pdf");
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
   };
   // let image = new Image();
   // image.src = `data:image/png;base64,${order.signature.image}`
@@ -144,21 +144,15 @@ function OrderScreen() {
               <p>
                 <strong>Signature: </strong>
                 {/* {order.signature?.image} */}
-                <img src={`static/images/signatures/signature${order.signature._id}.png`} />
+                <img
+                  src={`static/images/signatures/signature${order.signature._id}.png`}
+                />
                 {/* <img src={image ? image: ""} alt="signature image" /> */}
                 {/* <img src={image ? image: ""} alt="signature image" /> */}
                 {/* {order.shippingAddress?.address}, {order.shippingAddress?.city}{" "}
                 {order.shippingAddress?.postalCode},{" "}
                 {order.shippingAddress?.country} */}
               </p>
-
-              {order.isDelivered ? (
-                <Message variant="success">
-                  Delivered on {order.deliveredAt}
-                </Message>
-              ) : (
-                <Message variant="warning">Not Delivered</Message>
-              )}
             </ListGroup.Item>
             <ListGroup.Item>
               <h2>Payment Method</h2>
@@ -195,8 +189,8 @@ function OrderScreen() {
                           <Link to={`/book/${item.book}`}>{item.name}</Link>
                         </Col>
                         <Col md={4}>
-                          {item.qty} X ${item.price} = $
-                          {(item.qty * item.price).toFixed(2)}
+                          {item.qty + 1} X ${item.price} = $
+                          {((item.qty + 1) * item.price).toFixed(2)}
                         </Col>
                       </Row>
                     </ListGroup.Item>
@@ -221,12 +215,6 @@ function OrderScreen() {
                 </Row>
               </ListGroup.Item>
 
-              <ListGroup.Item>
-                <Row>
-                  <Col>Shipping: </Col>
-                  <Col>${order.shippingPrice}</Col>
-                </Row>
-              </ListGroup.Item>
               <ListGroup.Item>
                 <Row>
                   <Col>Tax: </Col>
@@ -256,22 +244,20 @@ function OrderScreen() {
               )}
             </ListGroup>
             {loadingDeliver && <Loader />}
-            {userInfo &&
-              order.isPaid &&
-              (
-                <ListGroup.Item>
-                  <div className="d-grid gap-2">
-                    <Button
-                      type="button"
-                      className="btn btn-block my-3"
-                      onClick={() => handlePDFDownload(order)}
-                      // onClick={deliverHandler}
-                    >
-                      Download
-                    </Button>
-                  </div>
-                </ListGroup.Item>
-              )}
+            {userInfo && order.isPaid && (
+              <ListGroup.Item>
+                <div className="d-grid gap-2">
+                  <Button
+                    type="button"
+                    className="btn btn-block my-3"
+                    onClick={() => handlePDFDownload(order)}
+                    // onClick={deliverHandler}
+                  >
+                    Download
+                  </Button>
+                </div>
+              </ListGroup.Item>
+            )}
           </Card>
         </Col>
       </Row>

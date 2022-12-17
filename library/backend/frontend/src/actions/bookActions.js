@@ -3,61 +3,50 @@ import {
   BOOK_LIST_REQUEST,
   BOOK_LIST_SUCCESS,
   BOOK_LIST_FAIL,
-
   BOOK_DETAILS_REQUEST,
   BOOK_DETAILS_SUCCESS,
   BOOK_DETAILS_FAIL,
-
-  
   BOOK_DELETE_REQUEST,
   BOOK_DELETE_SUCCESS,
   BOOK_DELETE_FAIL,
-
-
   BOOK_CREATE_REQUEST,
   BOOK_CREATE_SUCCESS,
   BOOK_CREATE_FAIL,
-
-
   BOOK_UPDATE_REQUEST,
   BOOK_UPDATE_SUCCESS,
   BOOK_UPDATE_FAIL,
-
-  
   BOOK_CREATE_REVIEW_REQUEST,
   BOOK_CREATE_REVIEW_SUCCESS,
   BOOK_CREATE_REVIEW_FAIL,
-
-
-  
   BOOK_TOP_REQUEST,
   BOOK_TOP_SUCCESS,
   BOOK_TOP_FAIL,
 } from "../constants/bookConstants";
 
-export const listBooks = (keyword = '') => async (dispatch) => {
-  try {
-    dispatch({ type: BOOK_LIST_REQUEST });
+export const listBooks =
+  (keyword = "") =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: BOOK_LIST_REQUEST });
 
-    const { data } = await axios.get(`/api/books${keyword}`);
+      const { data } = await axios.get(`/api/books${keyword}`);
 
-    setTimeout(()=> {
-      
+      setTimeout(() => {
+        dispatch({
+          type: BOOK_LIST_SUCCESS,
+          payload: data,
+        });
+      }, 1500);
+    } catch (error) {
       dispatch({
-        type: BOOK_LIST_SUCCESS,
-        payload: data,
+        type: BOOK_LIST_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
       });
-    }, 1500)
-  } catch (error) {
-    dispatch({
-      type: BOOK_LIST_FAIL,
-      payload:
-        error.response && error.response.data.detail
-          ? error.response.data.detail
-          : error.message,
-    });
-  }
-};
+    }
+  };
 
 export const listTopBooks = () => async (dispatch) => {
   try {
@@ -65,13 +54,12 @@ export const listTopBooks = () => async (dispatch) => {
 
     const { data } = await axios.get(`/api/books/top/`);
 
-
-    setTimeout(()=> {
-    dispatch({
-      type: BOOK_TOP_SUCCESS,
-      payload: data,
-    });
-    },1500)
+    setTimeout(() => {
+      dispatch({
+        type: BOOK_TOP_SUCCESS,
+        payload: data,
+      });
+    }, 1500);
   } catch (error) {
     dispatch({
       type: BOOK_TOP_FAIL,
@@ -83,17 +71,15 @@ export const listTopBooks = () => async (dispatch) => {
   }
 };
 
-
 export const listBookDetails = (id) => async (dispatch) => {
   try {
     dispatch({ type: BOOK_DETAILS_REQUEST });
 
     const { data } = await axios.get(`/api/books/${id}`);
     dispatch({
-        type: BOOK_DETAILS_SUCCESS,
-        payload: data,
+      type: BOOK_DETAILS_SUCCESS,
+      payload: data,
     });
-
   } catch (error) {
     dispatch({
       type: BOOK_DETAILS_FAIL,
@@ -104,10 +90,6 @@ export const listBookDetails = (id) => async (dispatch) => {
     });
   }
 };
-
-
-
-
 
 export const createBook = () => async (dispatch, getState) => {
   try {
@@ -125,7 +107,7 @@ export const createBook = () => async (dispatch, getState) => {
       },
     };
     const axios = require("axios").default;
-    const { data } = await axios.post(`/api/books/create/`,{}, config);
+    const { data } = await axios.post(`/api/books/create/`, {}, config);
 
     dispatch({
       type: BOOK_CREATE_SUCCESS,
@@ -141,8 +123,6 @@ export const createBook = () => async (dispatch, getState) => {
     });
   }
 };
-
-
 
 export const deleteBook = (id) => async (dispatch, getState) => {
   try {
@@ -161,9 +141,9 @@ export const deleteBook = (id) => async (dispatch, getState) => {
     };
     const axios = require("axios").default;
     const { data } = await axios.delete(`/api/books/delete/${id}`, config);
-    console.log(data)
+    console.log(data);
     dispatch({
-      type: BOOK_DELETE_SUCCESS
+      type: BOOK_DELETE_SUCCESS,
     });
   } catch (error) {
     dispatch({
@@ -175,9 +155,6 @@ export const deleteBook = (id) => async (dispatch, getState) => {
     });
   }
 };
-
-
-
 
 export const updateBook = (book) => async (dispatch, getState) => {
   try {
@@ -195,15 +172,19 @@ export const updateBook = (book) => async (dispatch, getState) => {
       },
     };
     const axios = require("axios").default;
-    const { data } = await axios.put(`/api/books/update/${book._id}/`,book, config);
+    console.log(book);
+    const { data } = await axios.put(
+      `/api/books/update/${book._id}/`,
+      book,
+      config
+    );
 
     dispatch({
       type: BOOK_UPDATE_SUCCESS,
       payload: data,
     });
 
-    dispatch({type:BOOK_DETAILS_SUCCESS, payload: data})
-
+    dispatch({ type: BOOK_DETAILS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
       type: BOOK_UPDATE_FAIL,
@@ -215,36 +196,40 @@ export const updateBook = (book) => async (dispatch, getState) => {
   }
 };
 
+export const createBookReview =
+  (bookId, review) => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: BOOK_CREATE_REVIEW_REQUEST,
+      });
 
-export const createBookReview = (bookId, review) => async (dispatch, getState) => {
-  try {
-    dispatch({
-      type: BOOK_CREATE_REVIEW_REQUEST,
-    });
+      const {
+        userLogin: { userInfo },
+      } = getState();
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      const axios = require("axios").default;
+      const { data } = await axios.post(
+        `/api/books/${bookId}/reviews/`,
+        review,
+        config
+      );
 
-    const {
-      userLogin: { userInfo },
-    } = getState();
-    const config = {
-      headers: {
-        "Content-type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
-    const axios = require("axios").default;
-    const { data } = await axios.post(`/api/books/${bookId}/reviews/`,review, config);
-
-    dispatch({
-      type: BOOK_CREATE_REVIEW_SUCCESS,
-      payload: data,
-    });
-  } catch (error) {
-    dispatch({
-      type: BOOK_CREATE_REVIEW_FAIL,
-      payload:
-        error.response && error.response.data.detail
-          ? error.response.data.detail
-          : error.message,
-    });
-  }
-};
+      dispatch({
+        type: BOOK_CREATE_REVIEW_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: BOOK_CREATE_REVIEW_FAIL,
+        payload:
+          error.response && error.response.data.detail
+            ? error.response.data.detail
+            : error.message,
+      });
+    }
+  };

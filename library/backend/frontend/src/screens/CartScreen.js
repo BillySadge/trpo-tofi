@@ -48,7 +48,6 @@ function CartScreen() {
 
     // navigate('/login?redirect=shipping')
   };
-  console.log(qty * 1000 * 24 * 60 * 60);
   return (
     <Row>
       <Col md={8}>
@@ -74,8 +73,11 @@ function CartScreen() {
                   <Col md={3}>
                     <h5>
                       {new Date(
-                        Date.now() + qty * 1000 * 24 * 60 * 60
+                        Date.now() + item.qty * 1000 * 24 * 60 * 60
                       ).toLocaleDateString("be-BY")}
+                      {/* {new Date(
+                        Date.now() + qty * 1000 * 24 * 60 * 60
+                      ).toLocaleDateString("be-BY")} */}
                     </h5>
                   </Col>
 
