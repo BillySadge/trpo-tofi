@@ -10,7 +10,7 @@ import { InputGroup } from "react-bootstrap";
 import FormCheckInput from "react-bootstrap/esm/FormCheckInput";
 
 function SignatureScreen() {
-  // const [signatureImg, setSignatureImg] = useState("")
+  // const [signatureImg, setSignatureImg] = useState("");
   const [isActive, setIsActive] = useState(false);
   const name = useRef();
   const [isName, setIsName] = useState(false);
@@ -45,6 +45,7 @@ function SignatureScreen() {
   let x = "black",
     y = 2;
   function init() {
+    document.getElementById("canvasimg").style.display = "none";
     canvas = document.getElementById("can");
     ctx = canvas.getContext("2d");
     w = canvas.width;
