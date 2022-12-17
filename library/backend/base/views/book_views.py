@@ -102,7 +102,7 @@ def updateBook(request, pk):
         # book.uploadSrc = data['bookSrc']
 
         # print(data['bookSrc'])
-        if(data["bookSrc"] == None):
+        if(not data["uploadSrc"]):
             raise ValidationError('ага а книгу не загрузишь? мы тут скамом не занимаемся')
         book.save()
     except ValidationError as e:
