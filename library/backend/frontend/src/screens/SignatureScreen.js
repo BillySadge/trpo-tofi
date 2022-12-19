@@ -45,7 +45,6 @@ function SignatureScreen() {
   let x = "black",
     y = 2;
   function init() {
-    document.getElementById("canvasimg").style.display = "none";
     canvas = document.getElementById("can");
     ctx = canvas.getContext("2d");
     w = canvas.width;
@@ -178,7 +177,10 @@ function SignatureScreen() {
     // console.log(image);
     setSignatureImg(image.src);
     // console.log(signatureImg);
-    dispatch(saveSignature({ signatureImg }, name.current.value));
+    cart.cartItems.forEach((cartItem) => {
+      console.log(signatureImg, name.current.value, cartItem.qty);
+      dispatch(saveSignature(signatureImg, name.current.value, cartItem.qty));
+    });
     navigate("/payment");
   };
 

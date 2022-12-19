@@ -96,6 +96,8 @@ class ShippingAddress(models.Model):
 class Signature(models.Model):
     order = models.OneToOneField(Order, on_delete=models.CASCADE, null=True, blank=True)
     image = models.ImageField(null=True, blank=True)
+    qty = models.IntegerField(null=True, blank=True, default=0)
+    name = models.CharField(max_length=200, null=True, blank=True)
     _id = models.AutoField(primary_key=True, editable=False)
 
 

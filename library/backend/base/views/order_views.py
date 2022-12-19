@@ -53,7 +53,9 @@ def addOrderItems(request):
 
         signature = Signature.objects.create(
             order = order,
-            image = data['signature']['signatureImg']
+            name = data['signature']['n'],
+            qty = data['signature']['q'],
+            image = data['signature']['i']
             # image = data['signature']['signatureImg']
 
         )

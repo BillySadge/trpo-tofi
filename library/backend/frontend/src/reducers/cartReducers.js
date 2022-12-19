@@ -8,7 +8,7 @@ import {
 } from "../constants/cartConstants";
 
 export const cartReducer = (
-  state = { cartItems: [], shippingAddress: {},signature: {} },
+  state = { cartItems: [], shippingAddress: {}, signature: {} },
   action
 ) => {
   switch (action.type) {
@@ -46,8 +46,7 @@ export const cartReducer = (
       return {
         ...state,
         signature: action.payload,
-      }
-    
+      };
 
     case CART_SAVE_PAYMENT_METHOD:
       return {
@@ -55,10 +54,10 @@ export const cartReducer = (
         paymentMethod: action.payload,
       };
     case CART_CLEAR_ITEMS:
-      return{
+      return {
         ...state,
-        cartItems: []
-      }
+        cartItems: [],
+      };
     default:
       return state;
   }
